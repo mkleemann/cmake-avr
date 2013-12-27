@@ -7,17 +7,15 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "mylib.h"
+
 int main(void)
 {
-   /* output pin 2 at port D */
-   DDRD |= (1 << PIN2);
+   initPort();
 
    while(1)
    {
-      // toggle pin
-      PORTD ^= (1 << PIN2);
-      // wait for 250ms
-      _delay_ms(250);
+      togglePin();
    }
 }
 
