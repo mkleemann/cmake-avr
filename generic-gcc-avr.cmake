@@ -42,43 +42,25 @@ set(AVR_UPLOADTOOL_OPTIONS
 
 # toolchain starts with defining mandatories
 set(CMAKE_SYSTEM_NAME generic)
+set(CMAKE_SYSTEM_PROCESSOR avr)
 set(CMAKE_C_COMPILER ${AVR_CC})
 set(CMAKE_CXX_COMPILER ${AVR_CXX})
 
 # compiler options
-set(AVR_COMMON_OPTIONS -mmcu=${AVR_MCU}
-                       -fpack-struct
-                       -fshort-enums
-   )
+set(AVR_COMMON_OPTIONS "-mmcu=${AVR_MCU} -fpack-struct -fshort-enums")
 
-set(AVR_COMPILER_OPTIONS ${AVR_COMMON_OPTIONS}
-                         -Wall
-                         -Werror
-                         -pedantic
-                         -pedantic-errors
-                         -funsigned-char
-                         -funsigned-bitfields
-                         -ffunction-sections
-                         -c
-                         -std=gnu99
-                         -DF_CPU=${MCU_SPEED}
-                         -save-temps
-   )
+set(AVR_COMPILER_OPTIONS "${AVR_COMMON_OPTIONS} -Wall -Werror -pedantic -pedantic-errors -funsigned-char -funsigned-bitfields -ffunction-sections -c -std=gnu99 -save-temps")
 
 # if not debug, assume release 
-if(CMAKE_BUILD_TYPE NOT EQUAL Debug)
+if(NOT CMAKE_BUILD_TYPE EQUAL Debug)
 
-   set(AVR_COMPILER_BUILDTYPE_OPTIONS ${AVR_COMPILER_OPTIONS} 
-                                      -Os 
-      )
+   set(AVR_COMPILER_BUILDTYPE_OPTIONS "${AVR_COMPILER_OPTIONS} -Os")
 
-else(CMAKE_BUILD_TYPE NOT EQUAL Debug)
+else(NOT CMAKE_BUILD_TYPE EQUAL Debug)
 
-   set(AVR_COMPILER_BUILDTYPE_OPTIONS ${AVR_COMPILER_OPTIONS} 
-                                      -O0
-      )
+   set(AVR_COMPILER_BUILDTYPE_OPTIONS "${AVR_COMPILER_OPTIONS -O0")
 
-endif(CMAKE_BUILD_TYPE NOT EQUAL Debug)
+endif(NOT CMAKE_BUILD_TYPE EQUAL Debug)
 
 # function definitions
 function(add_avr_executable EXECUTABLE_NAME)
@@ -94,7 +76,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    set_target_properties(
       ${elf_file}
       PROPERTIES
-         COMPILE_FLAGS "${AVR_COMPILER_BUILDTYPE_OPTIONS}"
+         COMPILE_FLAGS "${AVR_COMPILER_BUILDTYPE_OPTIONS} -DF_CPU=${MCU_SPEED}"
          LINK_FLAGS "${AVR_COMMON_OPTIONS} -Wl,-Map,${map_file}"
    )
    

@@ -10,12 +10,7 @@ set(CMAKE_BUILD_TYPE Release)
 set(MCU_SPEED "4000000UL")
 
 add_avr_executable(
-   <executable-name>
-   <sources> <headers>
-)
-
-add_avr_library(
-   <library-name>
-   <sources> <headers>
+   toggle-led
+   main.c
 )
 
