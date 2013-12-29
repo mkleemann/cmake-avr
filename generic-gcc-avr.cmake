@@ -51,29 +51,13 @@ function(add_avr_executable EXECUTABLE_NAME)
       CACHE STRING "Additional upload tool options"
       )
 
-   # compiler options
-   set(AVR_COMMON_OPTIONS "-mmcu=${AVR_MCU} -fpack-struct -fshort-enums")
-
-   set(AVR_COMPILER_OPTIONS "${AVR_COMMON_OPTIONS} -Wall -Werror -pedantic -pedantic-errors -funsigned-char -funsigned-bitfields -ffunction-sections -c -std=gnu99 -save-temps")
-
-   # if not debug, assume release 
-   if(NOT CMAKE_BUILD_TYPE EQUAL Debug)
-
-      set(AVR_COMPILER_BUILDTYPE_OPTIONS "${AVR_COMPILER_OPTIONS} -Os")
-
-   else(NOT CMAKE_BUILD_TYPE EQUAL Debug)
-
-      set(AVR_COMPILER_BUILDTYPE_OPTIONS "${AVR_COMPILER_OPTIONS} -O0")
-
-   endif(NOT CMAKE_BUILD_TYPE EQUAL Debug)
-
    # elf file
    add_executable(${elf_file} EXCLUDE_FROM_ALL ${ARGN})
    
    set_target_properties(
       ${elf_file}
       PROPERTIES
-         COMPILE_FLAGS "${AVR_COMPILER_BUILDTYPE_OPTIONS} -DF_CPU=${MCU_SPEED}"
+         COMPILE_FLAGS "${AVR_COMPILER_OPTIONS}"
          LINK_FLAGS "${AVR_COMMON_OPTIONS} -Wl,--gc-sections -mrelax -Wl,-Map,${map_file}"
    )
    
@@ -113,9 +97,34 @@ function(add_avr_executable EXECUTABLE_NAME)
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
          -U flash:w:${hex_file}
          -U eeprom:w:${eeprom_image}
-         -P usb -b 115200
+         -P ${AVR_UPLOADTOOL_PORT} -b 115200
       DEPENDS ${hex_file} ${eeprom_image}
       COMMENT "Uploading ${hex_file} to ${AVR_MCU} using ${AVR_PROGRAMMER}"
+   )
+
+   # get status
+   add_custom_target(
+      get_status
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT} -n -v
+      COMMENT "Get status from ${AVR_MCU}"
+   )
+
+   # get fuses
+   add_custom_target(
+      get_fuses
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT} -n
+         -U lfuse:r:-:b 
+         -U hfuse:r:-:b
+      COMMENT "Get fuses from ${AVR_MCU}"
+   )
+
+   # set fuses
+   add_custom_target(
+      set_fuses
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
+         -U lfuse:w:${L_FUSE}:m 
+         -U hfuse:w:${H_FUSE}:m
+         COMMENT "Setup: High Fuse: ${H_FUSE} Low Fuse: ${L_FUSE}"
    )
 
    # disassemble
@@ -136,8 +145,8 @@ function(add_avr_library LIBRARY_NAME)
    set_target_properties(
       ${lib_file}
       PROPERTIES
-         COMPILE_FLAGS -mmcu=${AVR_MCU}
-         LINK_FLAGS -mmcu=${AVR_MCU}
+         COMPILE_FLAGS "${AVR_COMMON_OPTIONS}"
+         # LINK_FLAGS "${AVR_COMMON_OPTIONS}"
    )
 
 endfunction(add_avr_library)
