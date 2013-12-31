@@ -3,8 +3,8 @@ add_avr_executable(
    main.c
 )
 
-#find_library(M_LIB m)
-#message(STATUS "avr-libm: ${M_LIB}")
+# find_library(M_LIB m)
+# message(STATUS "avr-libm: ${M_LIB}")
 
 find_library(C_LIB c)
 message(STATUS "avr-libc: ${C_LIB}")
