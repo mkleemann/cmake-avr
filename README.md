@@ -38,9 +38,9 @@ after running the `cmake` command.
 ### ToDo
 
 - [ ] export ELF target for target_link_libraries command
-- [ ] cleanup baudrate and other AVRDUDE settings
+- [X] cleanup baudrate and other AVRDUDE settings
 - [ ] test in Windows environment
-- [ ] set required variables as REQUIRED
-- [ ] use add_definition() instead of variables for compiler settings
+- ~~[ ] set required variables as REQUIRED~~
+- [X] use add_definition() instead of variables for compiler settings
 - [ ] some more tests with upload and fuses
  
