@@ -5,7 +5,7 @@ project(AVR-EXAMPLE)
 # needs to be overwritten, if default is not wanted
 set(AVR_UPLOADTOOL avrdude)
 set(AVR_PROGRAMMER avrispmkII)
-set(AVR_MCU atmega16)
+set(AVR_MCU atmega8)
 set(AVR_UPLOADTOOL_PORT usb)
 set(CMAKE_BUILD_TYPE Release)
 

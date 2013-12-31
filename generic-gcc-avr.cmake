@@ -64,9 +64,9 @@ function(add_avr_executable EXECUTABLE_NAME)
    add_custom_command(
       OUTPUT ${hex_file}
       COMMAND
-         ${AVR_OBJCOPY} -j .text -j .data -O ihex ${elf_file} ${hex_file}
+         ${AVR_OBJCOPY} -O ihex -R .eeprom -R .fuse -R .lock -R .signature ${elf_file} ${hex_file}
       COMMAND
-         ${AVR_SIZE_TOOL} ${elf_file}
+         ${AVR_SIZE_TOOL} -C --mcu=${AVR_MCU} ${elf_file}
       DEPENDS ${elf_file}
    )
 
@@ -74,7 +74,9 @@ function(add_avr_executable EXECUTABLE_NAME)
    add_custom_command(
       OUTPUT ${eeprom_image}
       COMMAND
-         ${AVR_OBJCOPY} -j .eeprom --change-section-lma .eeprom=0 -O ihex ${elf_file} ${eeprom_image}
+         ${AVR_OBJCOPY} -j .eeprom --set-section-flags=.eeprom=alloc,load 
+            --change-section-lma .eeprom=0 --no-change-warnings 
+            -O ihex ${elf_file} ${eeprom_image}
       DEPENDS ${elf_file}
    )
 
