@@ -10,6 +10,7 @@ The toolchain was created and tested within the following environment:
 * GNU Make 4.0
 * avr-gcc (GCC) 4.8.2
 * avr-binutils 2.23.2-1
+* avr-libc 1.8.0-5
 * git version 1.8.5.2
 
 After getting the project
