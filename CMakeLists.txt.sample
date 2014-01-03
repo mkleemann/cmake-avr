@@ -6,11 +6,23 @@ cmake_minimum_required(VERSION 2.8)
 
 project(EXAMPLE)
 
-# needs to be overwritten, if default is not wanted
+# tools to beused for programming the AVR 
 set(AVR_UPLOADTOOL avrdude)
 set(AVR_PROGRAMMER avrispmkII)
-set(AVR_MCU atmega8)
 set(AVR_UPLOADTOOL_PORT usb)
+# AVR and fuses needs to be set
+set(AVR_MCU atmega8)
+set(AVR_H_FUSE 0xd9)
+set(AVR_L_FUSE 0xc3)
+
+# status messages
+message(STATUS "Current uploadtool is: ${AVR_UPLOADTOOL}")
+message(STATUS "Current programmer is: ${AVR_PROGRAMMER}")
+message(STATUS "Current upload port is: ${AVR_UPLOADTOOL_PORT}")
+message(STATUS "Current uploadtool options are: ${AVR_UPLOADTOOL_OPTIONS}")
+message(STATUS "Current MCU is set to: ${AVR_MCU}")
+message(STATUS "Current H_FUSE is set to: ${AVR_H_FUSE}")
+message(STATUS "Current L_FUSE is set to: ${AVR_L_FUSE}")
 
 # set build type
 set(CMAKE_BUILD_TYPE Release)

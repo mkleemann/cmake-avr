@@ -161,9 +161,9 @@ function(add_avr_executable EXECUTABLE_NAME)
    add_custom_target(
       set_fuses
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
-         -U lfuse:w:${L_FUSE}:m 
-         -U hfuse:w:${H_FUSE}:m
-         COMMENT "Setup: High Fuse: ${H_FUSE} Low Fuse: ${L_FUSE}"
+         -U lfuse:w:${AVR_L_FUSE}:m 
+         -U hfuse:w:${AVR_H_FUSE}:m
+         COMMENT "Setup: High Fuse: ${AVR_H_FUSE} Low Fuse: ${AVR_L_FUSE}"
    )
 
    # disassemble
