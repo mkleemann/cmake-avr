@@ -28,7 +28,11 @@ set(MCU_SPEED "4000000UL")
 
 # some cmake cross-compile necessities
 if(CMAKE_HOST_SYSTEM MATCHES "Windows")
-    set(CMAKE_FIND_ROOT_PATH "d:/Program Files/Atmel/Atmel Studio 6.0/extensions/Atmel/AVRGCC/3.4.1.81/AVRToolchain/avr")
+    if(DEFINED ENV{AVR_FIND_ROOT_PATH})
+        set(CMAKE_FIND_ROOT_PATH ENV{AVR_FIND_ROOT_PATH})
+    else(DEFINED ENV{AVR_FIND_ROOT_PATH})
+        message(FATAL_ERROR "Please set AVR_FIND_ROOT_PATH in your environment.")
+    endif(DEFINED ENV{AVR_FIND_ROOT_PATH})
 else(CMAKE_HOST_SYSTEM MATCHES "Windows")
     set(CMAKE_FIND_ROOT_PATH "/usr/avr")
 endif(CMAKE_HOST_SYSTEM MATCHES "Windows")
