@@ -5,6 +5,7 @@ cmake-avr - a cmake toolchain for AVR projects
 
 The toolchain was created and tested within the following environment:
 
+Linux
 * Arch Linux with kernel 3.12.5-1-ARCH
 * cmake version 2.8.12.1
 * GNU Make 4.0
@@ -12,6 +13,17 @@ The toolchain was created and tested within the following environment:
 * avr-binutils 2.23.2-1
 * avr-libc 1.8.0-5
 * git version 1.8.5.2
+
+Windows XP
+* cmake version 2.8.10.2
+* GNU Make 3.81
+* avr-gcc (AVR_8_bit_GNU_Toolchain_3.4.1_798) 4.6.2 (Atmel Studio 6)
+* avr-binutils AVR_8_bit_GNU_Toolchain_3.4.1_798 (Atmel Studio 6)
+* avr-libc AVR_8_bit_GNU_Toolchain_3.4.1_798 (Atmel Studio 6)
+* git version 1.7.11.msysgit.1
+
+Note: Building under Windows, you need to set the environment (PATH) to the
+      location of the binaries, especially "make".
 
 After getting the project
 
@@ -28,6 +40,11 @@ cmake -DCMAKE_TOOLCHAIN_FILE=/path/to/clone/in/generic-gcc-avr.cmake /path/to/cl
 make
 ```
 
+For Windows use:
+```
+cmake -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=/path/to/clone/in/generic-gcc-avr.cmake /path/to/clone/in/example
+```
+
 This just creates the example, but does not upload it. For all possible targets, you need to run
 
 ```
@@ -40,8 +57,8 @@ after running the `cmake` command.
 
 - [ ] export ELF target for target_link_libraries command
 - [X] cleanup baudrate and other AVRDUDE settings
-- [ ] test in Windows environment
+- [X] test in Windows environment
 - ~~[ ] set required variables as REQUIRED~~
 - [X] use add_definition() instead of variables for compiler settings
 - [ ] some more tests with upload and fuses
- 
+
