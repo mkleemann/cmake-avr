@@ -22,10 +22,17 @@ Windows XP
 * avr-libc AVR_8_bit_GNU_Toolchain_3.4.1_798 (Atmel Studio 6)
 * git version 1.7.11.msysgit.1
 
-*Note:*
-_Building under Windows, you need to set the environment (PATH) to the
-location of the binaries, especially to find "make". Also the variable
-AVR_FIND_ROOT_PATH needs to be defined as this will be used in the build._
+**Note:**
+If building in a Windows environment, you need to extent the values of the 
+environment variable `PATH` to the location of the binaries, especially to 
+find `make`. To enable a more general appraoch to different Windows toolchains,
+the variable `AVR_FIND_ROOT_PATH` needs to be defined. Tested was it with the 
+following setup:
+
+```
+PATH=...;d:/Program Files/Atmel/Atmel Studio 6.0/extensions/Atmel/AVRGCC/3.4.1.81/AVRToolchain/bin;...
+AVR_FIND_RROT_PATH="d:/Program Files/Atmel/Atmel Studio 6.0/extensions/Atmel/AVRGCC/3.4.1.81/AVRToolchain/avr"
+```
 
 After getting the project
 
