@@ -24,7 +24,7 @@ Windows XP
 **Note:**
 If building in a Windows environment, you need to extent the values of the 
 environment variable `PATH` to the location of the binaries, especially to 
-find `make`. To enable a more general appraoch to different Windows toolchains,
+find `make`. To enable a more general approach to different Windows toolchains,
 the variable `AVR_FIND_ROOT_PATH` needs to be defined. Tested was it with the 
 following setup:
 

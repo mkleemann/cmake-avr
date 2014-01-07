@@ -93,5 +93,5 @@ add_avr_library(
 )
 
 # needs to be the elf file!
-target_link_libraries(<executable-name>-${AVR_MCU}.elf <library-name>)
+target_link_libraries(<executable-name>-${AVR_MCU}.elf <library-name>-${AVR_MCU})
 
