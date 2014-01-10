@@ -85,3 +85,7 @@ include_directories(${AVR-EXAMPLE_SOURCE_DIR}/mylib)
 add_subdirectory(mylib)
 add_subdirectory(app)
 
+# testing functions w/o source files - gets FATAL_ERROR
+# add_avr_executable(test_breaks_generation)
+# add_avr_library(mytestlib_breaks_generation)
+

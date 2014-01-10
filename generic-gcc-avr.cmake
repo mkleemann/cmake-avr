@@ -81,6 +81,9 @@ endif(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
 # target_link_libraries(<EXECUTABLE_NAME>-${AVR_MCU}.elf ...).
 ##########################################################################
 function(add_avr_executable EXECUTABLE_NAME)
+   if(NOT ARGN)
+      message(FATAL_ERROR "No source files given for ${EXECUTABLE_NAME}.")
+   endif(NOT ARGN)
 
    # set file names
    set(elf_file ${EXECUTABLE_NAME}-${AVR_MCU}.elf)
@@ -184,7 +187,10 @@ endfunction(add_avr_executable)
 # target_link_libraries(...).
 ##########################################################################
 function(add_avr_library LIBRARY_NAME)
-   
+   if(NOT ARGN)
+      message(FATAL_ERROR "No source files given for ${LIBRARY_NAME}.")
+   endif(NOT ARGN)
+
    set(lib_file ${LIBRARY_NAME}-${AVR_MCU})
 
    add_library(${lib_file} STATIC ${ARGN})
