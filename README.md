@@ -1,5 +1,4 @@
-cmake-avr - a cmake toolchain for AVR projects
-==============================================
+## cmake-avr - a cmake toolchain for AVR projects
 
 ### Testing the example provided
 
@@ -25,24 +24,24 @@ Windows XP
 **Note:**
 If building in a Windows environment, you need to extent the values of the 
 environment variable `PATH` to the location of the binaries, especially to 
-find `make`. To enable a more general appraoch to different Windows toolchains,
+find `make`. To enable a more general approach to different Windows toolchains,
 the variable `AVR_FIND_ROOT_PATH` needs to be defined. Tested was it with the 
 following setup:
 
-```
+```bash
 PATH=...;d:/Program Files/Atmel/Atmel Studio 6.0/extensions/Atmel/AVRGCC/3.4.1.81/AVRToolchain/bin;...
 AVR_FIND_RROT_PATH="d:/Program Files/Atmel/Atmel Studio 6.0/extensions/Atmel/AVRGCC/3.4.1.81/AVRToolchain/avr"
 ```
 
 After getting the project
 
-```
+```bash
 git clone git@github.com:mkleemann/cmake-avr.git /path/to/clone/in
 ```
 
 you just need to run the following commands
 
-```
+```bash
 mkdir -p /path/to/some/build/dir
 cd /path/to/some/build/dir
 cmake -DCMAKE_TOOLCHAIN_FILE=/path/to/clone/in/generic-gcc-avr.cmake /path/to/clone/in/example
@@ -50,13 +49,13 @@ make
 ```
 
 For Windows use:
-```
+```bash
 cmake -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=/path/to/clone/in/generic-gcc-avr.cmake /path/to/clone/in/example
 ```
 
 This just creates the example, but does not upload it. For all possible targets, you need to run
 
-```
+```bash
 make help
 ```
 
