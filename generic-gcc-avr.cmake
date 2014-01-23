@@ -188,6 +188,22 @@ function(add_avr_executable EXECUTABLE_NAME)
          COMMENT "Setup: High Fuse: ${AVR_H_FUSE} Low Fuse: ${AVR_L_FUSE}"
    )
 
+   # get oscillator calibration
+   add_custom_target(
+      get_calibration
+         ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
+         -U calibration:r:${AVR_MCU}_calib.tmp:r
+         COMMENT "Write calibration status of internal oscillator to ${AVR_MCU}_calib.tmp."
+   )
+
+   # set oscillator calibration
+   add_custom_target(
+      set_calibration
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
+         -U calibration:w:${AVR_MCU}_calib.hex
+         COMMENT "Program calibration status of internal oscillator from ${AVR_MCU}_calib.hex."
+   )
+
    # disassemble
    add_custom_target(
       disassemble_${EXECUTABLE_NAME}
