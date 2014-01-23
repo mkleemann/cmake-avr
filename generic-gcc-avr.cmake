@@ -147,7 +147,7 @@ function(add_avr_executable EXECUTABLE_NAME)
       upload_${EXECUTABLE_NAME}
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
          -U flash:w:${hex_file}
-         -U eeprom:w:${eeprom_image}
+         #-U eeprom:w:${eeprom_image}
          -P ${AVR_UPLOADTOOL_PORT} 
       DEPENDS ${hex_file} ${eeprom_image}
       COMMENT "Uploading ${hex_file} and ${eeprom_image} to ${AVR_MCU} using ${AVR_PROGRAMMER}"
