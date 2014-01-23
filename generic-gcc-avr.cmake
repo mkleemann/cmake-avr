@@ -19,6 +19,7 @@ set(CMAKE_CXX_COMPILER ${AVR_CXX})
 # some necessary tools and variables for AVR builds, which may not 
 # defined yet
 # - AVR_UPLOADTOOL
+# - AVR_UPLOADTOOL_PORT
 # - AVR_PROGRAMMER
 # - AVR_MCU
 ##########################################################################
@@ -31,6 +32,14 @@ if(NOT AVR_UPLOADTOOL)
    )
    find_program(AVR_UPLOADTOOL avrdude)
 endif(NOT AVR_UPLOADTOOL)
+
+# default upload tool port
+if(NOT AVR_UPLOADTOOL_PORT)
+   set(
+      AVR_UPLOADTOOL_PORT usb
+      CACHE STRING "Set default upload tool port: usb"
+   )
+endif(NOT AVR_UPLOADTOOL_PORT)
 
 # default programmer (hardware)
 if(NOT AVR_PROGRAMMER)
