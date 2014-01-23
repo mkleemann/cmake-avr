@@ -147,7 +147,17 @@ function(add_avr_executable EXECUTABLE_NAME)
          -U eeprom:w:${eeprom_image}
          -P ${AVR_UPLOADTOOL_PORT} 
       DEPENDS ${hex_file} ${eeprom_image}
-      COMMENT "Uploading ${hex_file} to ${AVR_MCU} using ${AVR_PROGRAMMER}"
+      COMMENT "Uploading ${hex_file} and ${eeprom_image} to ${AVR_MCU} using ${AVR_PROGRAMMER}"
+   )
+
+   # upload eeprom only - with avrdude
+   add_custom_target(
+      upload_eeprom_only
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
+         -U eeprom:w:${eeprom_image}
+         -P ${AVR_UPLOADTOOL_PORT} 
+      DEPENDS ${eeprom_image}
+      COMMENT "Uploading ${eeprom_image} to ${AVR_MCU} using ${AVR_PROGRAMMER}"
    )
 
    # get status
