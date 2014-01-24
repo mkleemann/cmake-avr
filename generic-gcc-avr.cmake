@@ -147,6 +147,7 @@ function(add_avr_executable EXECUTABLE_NAME)
       upload_${EXECUTABLE_NAME}
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
          -U flash:w:${hex_file}
+         # commented due to bug http://savannah.nongnu.org/bugs/?40142
          #-U eeprom:w:${eeprom_image}
          -P ${AVR_UPLOADTOOL_PORT} 
       DEPENDS ${hex_file} ${eeprom_image}
