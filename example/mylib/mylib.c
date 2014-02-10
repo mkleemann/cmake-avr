@@ -1,7 +1,8 @@
-/*********************
+/**
+ * \brief Implementation of some simple user functions.
+ *
  * \file mylib.c
  * \author Matthias Kleemann
- *
  */
 
 #include <avr/io.h>
@@ -10,7 +11,8 @@
 #include "mylib.h"
 
 /**
- * initializes port pin for led
+ * \brief initializes a port pin for a LED
+ * In this case port pin 2 of the port D of an atmega8 is used.
  */
 void initPort(void)
 {
@@ -19,7 +21,7 @@ void initPort(void)
 }
 
 /**
- * toggle port pin for led
+ * \brief toggle the defined port pin for the LED
  */
 void togglePin(void)
 {

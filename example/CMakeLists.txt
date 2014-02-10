@@ -127,3 +127,44 @@ add_subdirectory(app)
 # add_avr_executable(test_breaks_generation)
 # add_avr_library(mytestlib_breaks_generation)
 
+##################################################################################
+# find doxygen
+##################################################################################
+find_package(Doxygen)
+
+##################################################################################
+# create docu target, if package was found
+##################################################################################
+if(DOXYGEN_FOUND)
+    # configuration input and output
+    set(DOXYGEN_CONF_IN ${AVR-EXAMPLE_SOURCE_DIR}/doxygen.conf)
+    set(DOXYGEN_CONF_OUT doxygen.conf)
+
+    # set to override variable within configuration
+    set(DOXYGEN_INPUT_PATH "\"${CMAKE_CURRENT_SOURCE_DIR}\"")
+    set(DOXYGEN_OUTPUT_PATH "\"${CMAKE_CURRENT_BINARY_DIR}\"")
+    set(DOXYGEN_IMAGE_PATH "\"${CMAKE_CURRENT_SOURCE_DIR}\"")
+    set(DOXYGEN_DOTFILE_PATH "\"${CMAKE_CURRENT_SOURCE_DIR}\"")
+
+    # cleanup properties from html output
+    set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+                    "${CMAKE_CURRENT_BINARY_DIR}/html"
+    )
+
+    # copy configuration file and replace input path
+    configure_file( ${DOXYGEN_CONF_IN}
+                    ${DOXYGEN_CONF_OUT}
+                    @ONLY
+    )
+
+    # add documentation target
+    add_custom_target(
+        docu
+        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_CONF_OUT}
+        COMMENT "Create HTML documentation."
+    )
+else(DOXYGEN_FOUND)
+    message(WARNING "Doxygen not found. Documentation target not created.")
+endif(DOXYGEN_FOUND)
+
+
