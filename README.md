@@ -30,7 +30,7 @@ following setup:
 
 ```bash
 PATH=...;d:/Program Files/Atmel/Atmel Studio 6.0/extensions/Atmel/AVRGCC/3.4.1.81/AVRToolchain/bin;...
-AVR_FIND_RROT_PATH="d:/Program Files/Atmel/Atmel Studio 6.0/extensions/Atmel/AVRGCC/3.4.1.81/AVRToolchain/avr"
+AVR_FIND_ROOT_PATH="d:/Program Files/Atmel/Atmel Studio 6.0/extensions/Atmel/AVRGCC/3.4.1.81/AVRToolchain/avr"
 ```
 
 After getting the project
@@ -66,7 +66,6 @@ after running the `cmake` command.
 - [ ] export ELF target for target_link_libraries command
 - [X] cleanup baudrate and other AVRDUDE settings
 - [X] test in Windows environment
-- ~~[ ] set required variables as REQUIRED~~
 - [X] use add_definition() instead of variables for compiler settings
-- [ ] some more tests with upload and fuses
+- [X] some more tests with upload and fuses
 
