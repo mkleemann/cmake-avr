@@ -24,10 +24,18 @@ if(DOXYGEN_FOUND)
       set(DOXYGEN_CONF_OUT doxygen.conf)
 
       # set to override variable within configuration
-      set(DOXYGEN_INPUT_PATH "\"${CMAKE_CURRENT_SOURCE_DIR}\"")
-      set(DOXYGEN_OUTPUT_PATH "\"${CMAKE_CURRENT_BINARY_DIR}\"")
-      set(DOXYGEN_IMAGE_PATH "\"${CMAKE_CURRENT_SOURCE_DIR}\"")
-      set(DOXYGEN_DOTFILE_PATH "\"${CMAKE_CURRENT_SOURCE_DIR}\"")
+      if(NOT DOXYGEN_INPUT_PATH)
+         set(DOXYGEN_INPUT_PATH "\"${CMAKE_CURRENT_SOURCE_DIR}\"")
+      endif(NOT DOXYGEN_INPUT_PATH)
+      if(NOT DOXYGEN_OUTPUT_PATH)
+         set(DOXYGEN_OUTPUT_PATH "\"${CMAKE_CURRENT_BINARY_DIR}\"")
+      endif(NOT DOXYGEN_OUTPUT_PATH)
+      if(NOT DOXYGEN_IMAGE_PATH)
+         set(DOXYGEN_IMAGE_PATH "\"${CMAKE_CURRENT_SOURCE_DIR}\"")
+      endif(NOT DOXYGEN_IMAGE_PATH)
+      if(NOT DOXYGEN_DOTFILE_PATH)
+         set(DOXYGEN_DOTFILE_PATH "\"${CMAKE_CURRENT_SOURCE_DIR}\"")
+      endif(NOT DOXYGEN_DOTFILE_PATH)
 
       # cleanup properties from html output
       set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
