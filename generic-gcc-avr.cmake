@@ -10,6 +10,25 @@
 ##########################################################################
 
 ##########################################################################
+# The toolchain requires some variables set.
+#
+# AVR_MCU (default: atmega8)
+#     the type of AVR the application is built for
+# AVR_L_FUSE (NO DEFAULT)
+#     the LOW fuse value for the MCU used
+# AVR_H_FUSE (NO DEFAULT)
+#     the HIGH fuse value for the MCU used
+# AVR_UPLOADTOOL (default: avrdude)
+#     the application used to upload to the MCU
+#     NOTE: The toolchain is currently quite specific about
+#           the commands used, so it needs tweaking.
+# AVR_UPLOADTOOL_PORT (default: usb)
+#     the port used for the upload tool, e.g. usb
+# AVR_PROGRAMMER (default: avrispmkII)
+#     the programmer hardware used, e.g. avrispmkII
+##########################################################################
+
+##########################################################################
 # executables in use
 ##########################################################################
 find_program(AVR_CC avr-gcc)
