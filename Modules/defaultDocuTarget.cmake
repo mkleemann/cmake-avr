@@ -11,12 +11,16 @@ find_package(Doxygen)
 # create docu target, if package was found
 ##################################################################################
 if(DOXYGEN_FOUND)
-   # find_file does not work as expected (WinXP, cmake 2.8.10-2.8.12)
-   find_program(conf_file NAMES "doxygen.conf" PATHS ${CMAKE_CURRENT_SOURCE_DIR}) 
-   
+   if(NOT DOXYGEN_CONF_IN)
+      # find_file does not work as expected (WinXP, cmake 2.8.10-2.8.12)
+      find_program(conf_file NAMES "doxygen.conf.in" PATHS ${CMAKE_CURRENT_SOURCE_DIR})
+   else(NOT DOXYGEN_CONF_IN)
+      set(conf_file ${DOXYGEN_CONF_IN})
+   endif(NOT DOXYGEN_CONF_IN)
+
    if(NOT conf_file)
-      message(WARNING "No doxygen configuration found. Please create 
-                       '${CMAKE_CURRENT_SOURCE_DIR}/doxygen.conf'. 
+      message(WARNING "No doxygen configuration found. Please create
+                       '${CMAKE_CURRENT_SOURCE_DIR}/doxygen.conf.in'.
                        No documentation target created.")
    else(NOT conf_file)
       # configuration input and output
