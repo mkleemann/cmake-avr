@@ -1,5 +1,5 @@
 /**
- * \brief simple template class for port access for LEDs
+ * \brief simple class for port access for LEDs
  *
  * \file CLed.cc
  * \author Matthias Kleemann

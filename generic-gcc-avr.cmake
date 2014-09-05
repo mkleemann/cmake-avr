@@ -3,9 +3,9 @@
 # license):
 # <dev@layer128.net> wrote this file. As long as you retain this notice
 # you can do whatever you want with this stuff. If we meet some day, and
-# you think this stuff is worth it, you can buy me a be(ve)er(age) in 
+# you think this stuff is worth it, you can buy me a be(ve)er(age) in
 # return. (I don't like beer much.)
-# 
+#
 # Matthias Kleemann
 ##########################################################################
 
@@ -46,7 +46,7 @@ set(CMAKE_C_COMPILER ${AVR_CC})
 set(CMAKE_CXX_COMPILER ${AVR_CXX})
 
 ##########################################################################
-# some necessary tools and variables for AVR builds, which may not 
+# some necessary tools and variables for AVR builds, which may not
 # defined yet
 # - AVR_UPLOADTOOL
 # - AVR_UPLOADTOOL_PORT
@@ -88,7 +88,7 @@ if(NOT AVR_MCU)
 endif(NOT AVR_MCU)
 
 ##########################################################################
-# check build types: 
+# check build types:
 # - Debug
 # - Release
 # - RelWithDebInfo
@@ -107,7 +107,7 @@ if(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
 endif(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
            (CMAKE_BUILD_TYPE MATCHES RelWithDebInfo) OR
            (CMAKE_BUILD_TYPE MATCHES Debug)))
- 
+
 ##########################################################################
 
 ##########################################################################
@@ -128,18 +128,18 @@ function(add_avr_executable EXECUTABLE_NAME)
    set(elf_file ${EXECUTABLE_NAME}-${AVR_MCU}.elf)
    set(hex_file ${EXECUTABLE_NAME}-${AVR_MCU}.hex)
    set(map_file ${EXECUTABLE_NAME}-${AVR_MCU}.map)
-   set(eeprom_image ${EXECUTABLE_NAME}-eeprom.hex)
-  
+   set(eeprom_image ${EXECUTABLE_NAME}-${AVR_MCU}-eeprom.hex)
+
    # elf file
    add_executable(${elf_file} EXCLUDE_FROM_ALL ${ARGN})
-   
+
    set_target_properties(
       ${elf_file}
       PROPERTIES
          COMPILE_FLAGS "-mmcu=${AVR_MCU}"
          LINK_FLAGS "-mmcu=${AVR_MCU} -Wl,--gc-sections -mrelax -Wl,-Map,${map_file}"
    )
-   
+
    add_custom_command(
       OUTPUT ${hex_file}
       COMMAND
@@ -153,8 +153,8 @@ function(add_avr_executable EXECUTABLE_NAME)
    add_custom_command(
       OUTPUT ${eeprom_image}
       COMMAND
-         ${AVR_OBJCOPY} -j .eeprom --set-section-flags=.eeprom=alloc,load 
-            --change-section-lma .eeprom=0 --no-change-warnings 
+         ${AVR_OBJCOPY} -j .eeprom --set-section-flags=.eeprom=alloc,load
+            --change-section-lma .eeprom=0 --no-change-warnings
             -O ihex ${elf_file} ${eeprom_image}
       DEPENDS ${elf_file}
    )
@@ -177,8 +177,8 @@ function(add_avr_executable EXECUTABLE_NAME)
       upload_${EXECUTABLE_NAME}
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
          -U flash:w:${hex_file}
-         -P ${AVR_UPLOADTOOL_PORT} 
-      DEPENDS ${hex_file} 
+         -P ${AVR_UPLOADTOOL_PORT}
+      DEPENDS ${hex_file}
       COMMENT "Uploading ${hex_file} to ${AVR_MCU} using ${AVR_PROGRAMMER}"
    )
 
@@ -188,7 +188,7 @@ function(add_avr_executable EXECUTABLE_NAME)
       upload_eeprom
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
          -U eeprom:w:${eeprom_image}
-         -P ${AVR_UPLOADTOOL_PORT} 
+         -P ${AVR_UPLOADTOOL_PORT}
       DEPENDS ${eeprom_image}
       COMMENT "Uploading ${eeprom_image} to ${AVR_MCU} using ${AVR_PROGRAMMER}"
    )
@@ -204,7 +204,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    add_custom_target(
       get_fuses
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT} -n
-         -U lfuse:r:-:b 
+         -U lfuse:r:-:b
          -U hfuse:r:-:b
       COMMENT "Get fuses from ${AVR_MCU}"
    )
@@ -213,7 +213,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    add_custom_target(
       set_fuses
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
-         -U lfuse:w:${AVR_L_FUSE}:m 
+         -U lfuse:w:${AVR_L_FUSE}:m
          -U hfuse:w:${AVR_H_FUSE}:m
          COMMENT "Setup: High Fuse: ${AVR_H_FUSE} Low Fuse: ${AVR_L_FUSE}"
    )
