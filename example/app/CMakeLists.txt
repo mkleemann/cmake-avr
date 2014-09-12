@@ -20,7 +20,5 @@ add_avr_executable(
 find_library(C_LIB c)
 message(STATUS "avr-libc: ${C_LIB}")
 
-# link libraries; NEEDS elf target as base!
-target_link_libraries(toggle-led-${AVR_MCU}.elf mylib-${AVR_MCU} ${C_LIB})
-
+avr_target_link_libraries(toggle-led mylib ${C_LIB})
 
