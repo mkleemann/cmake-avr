@@ -11,7 +11,10 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-project(AVR-EXAMPLE)
+### TOOLCHAIN SETUP AREA #################################################
+# Set any variables used in the toolchain prior project() call. In that
+# case they are already set and used.
+##########################################################################
 
 ##########################################################################
 # tools to beused for programming the AVR
@@ -23,9 +26,16 @@ set(AVR_UPLOADTOOL_PORT usb)
 ##########################################################################
 # AVR and fuses needs to be set
 ##########################################################################
-set(AVR_MCU atmega8)
+set(AVR_MCU atmega16)
 set(AVR_H_FUSE 0xd9)
 set(AVR_L_FUSE 0xc3)
+
+### END TOOLCHAIN SETUP AREA #############################################
+
+##########################################################################
+# name your project
+##########################################################################
+project(AVR-EXAMPLE)
 
 ##########################################################################
 # status messages

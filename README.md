@@ -5,13 +5,13 @@
 The toolchain was created and tested within the following environment:
 
 Linux
-* Arch Linux with kernel 3.12.5-1-ARCH
-* cmake version 2.8.12.1
+* Arch Linux with kernel 3.12.5-1-ARCH up to 3.16.2-1-ARCH
+* cmake version 2.8.12.1 - 3.0.2
 * GNU Make 4.0
-* avr-gcc (GCC) 4.8.2
-* avr-binutils 2.23.2-1
-* avr-libc 1.8.0-5
-* git version 1.8.5.2
+* avr-gcc (GCC) 4.8.2 - 4.9.1
+* avr-binutils 2.23.2-1 - 2.24-2
+* avr-libc 1.8.0-5 - 1.8.1-1
+* git version 1.8.5.2 - 2.1.0
 
 Windows XP
 * cmake version 2.8.10.2
@@ -20,6 +20,11 @@ Windows XP
 * avr-binutils AVR_8_bit_GNU_Toolchain_3.4.1_798 (Atmel Studio 6)
 * avr-libc AVR_8_bit_GNU_Toolchain_3.4.1_798 (Atmel Studio 6)
 * git version 1.7.11.msysgit.1
+
+Windows 7
+* cmake 3.0
+* Atmel Studio 6
+* git 1.9.4.msysgit
 
 **Note:**
 If building in a Windows environment, you need to extent the values of the

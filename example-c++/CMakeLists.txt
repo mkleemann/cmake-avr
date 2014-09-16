@@ -3,15 +3,18 @@
 # license):
 # <dev@layer128.net> wrote this file. As long as you retain this notice
 # you can do whatever you want with this stuff. If we meet some day, and
-# you think this stuff is worth it, you can buy me a be(ve)er(age) in 
+# you think this stuff is worth it, you can buy me a be(ve)er(age) in
 # return. (I don't like beer much.)
-# 
+#
 # Matthias Kleemann
 ##########################################################################
 
 cmake_minimum_required(VERSION 2.8)
 
-project(AVR-CPP-EXAMPLE)
+### TOOLCHAIN SETUP AREA #################################################
+# Set any variables used in the toolchain prior project() call. In that
+# case they are already set and used.
+##########################################################################
 
 ##########################################################################
 # tools to beused for programming the AVR
@@ -23,9 +26,16 @@ set(AVR_UPLOADTOOL_PORT usb)
 ##########################################################################
 # AVR and fuses needs to be set
 ##########################################################################
-set(AVR_MCU atmega8)
+set(AVR_MCU atmega32)
 set(AVR_H_FUSE 0xd9)
 set(AVR_L_FUSE 0xc3)
+
+### END TOOLCHAIN SETUP AREA #############################################
+
+##########################################################################
+# name your project
+##########################################################################
+project(AVR-CPP-EXAMPLE)
 
 ##########################################################################
 # status messages
