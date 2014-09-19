@@ -22,21 +22,27 @@ Windows XP
 * git version 1.7.11.msysgit.1
 
 Windows 7
-* cmake 3.0
-* Atmel Studio 6
-* git 1.9.4.msysgit
+* cmake 3.0.2
+* Atmel Studio 6.2
+* git 1.9.0.msysgit
 
 **Note:**
 If building in a Windows environment, you need to extent the values of the
 environment variable `PATH` to the location of the binaries, especially to
 find `make`. To enable a more general approach to different Windows toolchains,
 the variable `AVR_FIND_ROOT_PATH` needs to be defined. Tested was it with the
-following setup:
+following setup (XP):
 
 ```bash
 PATH=...;d:/Program Files/Atmel/Atmel Studio 6.0/extensions/Atmel/AVRGCC/3.4.1.81/AVRToolchain/bin;...
 AVR_FIND_ROOT_PATH="d:/Program Files/Atmel/Atmel Studio 6.0/extensions/Atmel/AVRGCC/3.4.1.81/AVRToolchain/avr"
 ```
+**Issue within Windows 7 environment**
+With Windows 7 (64bit) and the Atmel Studio 6.2 setup, `make.exe` now resides
+differently. It also creashes during the cmake generation process, just after the
+simple examples to test the compiler (try_compile(...)) ran through. The why and
+avoidance of this is currently unknown to me. I didn't try to use a cygwin make as
+a substitute yet.
 
 After getting the project
 
