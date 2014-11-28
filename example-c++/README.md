@@ -18,7 +18,7 @@ project(AVR-CPP-EXAMPLE)
 ```
 
 Currently it's quite hardcoded reflecting the file structure of this toolchain. You should
-use a position within you source tree to be referenced too. This could be done using the
+use a position within your source tree to be referenced too. This could be done using the
 toolchain as a submodule, like 
 
 ```cmake

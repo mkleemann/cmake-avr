@@ -39,9 +39,9 @@ AVR_FIND_ROOT_PATH="d:/Program Files/Atmel/Atmel Studio 6.0/extensions/Atmel/AVR
 ```
 **Issue within Windows 7 environment**
 With Windows 7 (64bit) and the Atmel Studio 6.2 setup, `make.exe` now resides
-differently. It also creashes during the cmake generation process, just after the
+differently. It also crashes during the cmake generation process, just after the
 simple examples to test the compiler (try_compile(...)) ran through. The why and
-avoidance of this is currently unknown to me. I didn't try to use a cygwin make as
+avoidance of this is currently unknown to me. I didn't try to use a `cygwin make` as
 a substitute yet.
 
 After getting the project
