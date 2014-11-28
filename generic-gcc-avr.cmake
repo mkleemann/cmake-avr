@@ -103,15 +103,17 @@ endif(NOT AVR_MCU)
 ##########################################################################
 if(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
         (CMAKE_BUILD_TYPE MATCHES RelWithDebInfo) OR
-        (CMAKE_BUILD_TYPE MATCHES Debug)))
+        (CMAKE_BUILD_TYPE MATCHES Debug) OR
+        (CMAKE_BUILD_TYPE MATCHES MinSizeRel)))
    set(
       CMAKE_BUILD_TYPE Release
-      CACHE STRING "Choose cmake build type: Debug Release RelWithDebInfo"
+      CACHE STRING "Choose cmake build type: Debug Release RelWithDebInfo MinSizeRel"
       FORCE
    )
 endif(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
            (CMAKE_BUILD_TYPE MATCHES RelWithDebInfo) OR
-           (CMAKE_BUILD_TYPE MATCHES Debug)))
+           (CMAKE_BUILD_TYPE MATCHES Debug) OR
+           (CMAKE_BUILD_TYPE MATCHES MinSizeRel)))
 
 ##########################################################################
 
