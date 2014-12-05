@@ -57,6 +57,7 @@ set(CMAKE_CXX_COMPILER ${AVR_CXX})
 # - AVR_UPLOADTOOL_PORT
 # - AVR_PROGRAMMER
 # - AVR_MCU
+# - AVR_SIZE_ARGS
 ##########################################################################
 
 # default upload tool
@@ -91,6 +92,15 @@ if(NOT AVR_MCU)
       CACHE STRING "Set default MCU: atmega8 (see 'avr-gcc --target-help' for valid values)"
    )
 endif(NOT AVR_MCU)
+
+#default avr-size args
+if(NOT AVR_SIZE_ARGS)
+   if(APPLE)
+      set(AVR_SIZE_ARGS "-B")
+   else(APPLE)
+      set(AVR_SIZE_ARGS "-C --mcu=${AVR_MCU}")
+   endif(APPLE)
+endif(NOT AVR_SIZE_ARGS)
 
 ##########################################################################
 # check build types:
@@ -161,7 +171,7 @@ function(add_avr_executable EXECUTABLE_NAME)
       COMMAND
          ${AVR_OBJCOPY} -j .text -j .data -O ihex ${elf_file} ${hex_file}
       COMMAND
-         ${AVR_SIZE_TOOL} -C --mcu=${AVR_MCU} ${elf_file}
+         ${AVR_SIZE_TOOL} ${AVR_SIZE_ARGS} ${elf_file}
       DEPENDS ${elf_file}
    )
 

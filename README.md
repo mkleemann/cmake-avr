@@ -26,6 +26,15 @@ Windows 7
 * Atmel Studio 6.2
 * git 1.9.0.msysgit
 
+OS X 
+* OS X 10.10 with AVR toolchain installed from [macports](http://macports.org)
+* cmake 3.0.2 
+* GNU Make 3.81
+* avr-gcc 4.9.1
+* avr-libc 1.8.1
+* avr-binutils 2.24_1
+* git version 2.1.2
+
 **Note:**
 If building in a Windows environment, you need to extent the values of the
 environment variable `PATH` to the location of the binaries, especially to
