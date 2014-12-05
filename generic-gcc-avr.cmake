@@ -99,9 +99,9 @@ endif(NOT AVR_MCU)
 #default avr-size args
 if(NOT AVR_SIZE_ARGS)
    if(APPLE)
-      set(AVR_SIZE_ARGS "-B")
+      set(AVR_SIZE_ARGS -B)
    else(APPLE)
-      set(AVR_SIZE_ARGS "-C --mcu=${AVR_MCU}")
+      set(AVR_SIZE_ARGS -C;--mcu=${AVR_MCU})
    endif(APPLE)
 endif(NOT AVR_SIZE_ARGS)
 
