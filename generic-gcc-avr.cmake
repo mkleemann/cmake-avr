@@ -33,9 +33,6 @@
 ##########################################################################
 option(WITH_MCU "Add the mCU type to the target file name." ON)
 
-SET(CMAKE_SYSTEM_NAME Generic)
-SET(CMAKE_SYSTEM_PROCESSOR avr)
-SET(CMAKE_CROSSCOMPILING 1)
 ##########################################################################
 # executables in use
 ##########################################################################
