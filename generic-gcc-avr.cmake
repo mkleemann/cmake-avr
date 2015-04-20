@@ -33,9 +33,6 @@
 ##########################################################################
 option(WITH_MCU "Add the mCU type to the target file name." ON)
 
-SET(CMAKE_SYSTEM_NAME Generic)
-SET(CMAKE_SYSTEM_PROCESSOR avr)
-SET(CMAKE_CROSSCOMPILING 1)
 ##########################################################################
 # executables in use
 ##########################################################################
@@ -48,7 +45,7 @@ find_program(AVR_OBJDUMP avr-objdump)
 ##########################################################################
 # toolchain starts with defining mandatory variables
 ##########################################################################
-set(CMAKE_SYSTEM_NAME generic)
+set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR avr)
 set(CMAKE_C_COMPILER ${AVR_CC})
 set(CMAKE_CXX_COMPILER ${AVR_CXX})
