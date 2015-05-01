@@ -32,6 +32,12 @@ set(AVR_L_FUSE 0xc3)
 
 ### END TOOLCHAIN SETUP AREA #############################################
 
+# Intentionally left blank, due to a different approach of using the
+# toolchain file via -DCMAKE_TOOLCHAIN_FILE=path/to/generic-gcc-avr.cmake
+# at the cmake command line call
+#
+# include(../generic-gcc-avr.cmake)
+
 ##########################################################################
 # name your project
 ##########################################################################
