@@ -26,6 +26,8 @@
 #     the port used for the upload tool, e.g. usb
 # AVR_PROGRAMMER (default: avrispmkII)
 #     the programmer hardware used, e.g. avrispmkII
+# AVR_UPLOAD_BAUDRATE (default: 115200)
+#     the upload speed fot the upload tool
 ##########################################################################
 
 ##########################################################################
@@ -53,12 +55,22 @@ set(CMAKE_CXX_COMPILER ${AVR_CXX})
 ##########################################################################
 # some necessary tools and variables for AVR builds, which may not
 # defined yet
+# - AVR_MCU
 # - AVR_UPLOADTOOL
 # - AVR_UPLOADTOOL_PORT
 # - AVR_PROGRAMMER
-# - AVR_MCU
+# - AVR_UPLOAD_BAUDRATE
 # - AVR_SIZE_ARGS
+# they have a default values
 ##########################################################################
+
+# default MCU (chip)
+if(NOT AVR_MCU)
+   set(
+      AVR_MCU atmega8
+      CACHE STRING "Set default MCU: atmega8 (see 'avr-gcc --target-help' for valid values)"
+   )
+endif(NOT AVR_MCU)
 
 # default upload tool
 if(NOT AVR_UPLOADTOOL)
@@ -85,13 +97,13 @@ if(NOT AVR_PROGRAMMER)
    )
 endif(NOT AVR_PROGRAMMER)
 
-# default MCU (chip)
-if(NOT AVR_MCU)
-   set(
-      AVR_MCU atmega8
-      CACHE STRING "Set default MCU: atmega8 (see 'avr-gcc --target-help' for valid values)"
-   )
-endif(NOT AVR_MCU)
+# default upload baudrate 
+if(NOT AVR_UPLOAD_BAUDRATE) 
+   set( 
+      AVR_UPLOAD_BAUDRATE 115200 
+      CACHE STRING "Set default upload baudrate: 115200" 
+   ) 
+endif(NOT AVR_UPLOAD_BAUDRATE) 
 
 #default avr-size args
 if(NOT AVR_SIZE_ARGS)
@@ -208,6 +220,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    add_custom_target(
       upload_${EXECUTABLE_NAME}
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
+         -b ${AVR_UPLOAD_BAUDRATE}
          -U flash:w:${hex_file}
          -P ${AVR_UPLOADTOOL_PORT}
       DEPENDS ${hex_file}
@@ -219,6 +232,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    add_custom_target(
       upload_eeprom
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
+         -b ${AVR_UPLOAD_BAUDRATE}
          -U eeprom:w:${eeprom_image}
          -P ${AVR_UPLOADTOOL_PORT}
       DEPENDS ${eeprom_image}
@@ -228,7 +242,8 @@ function(add_avr_executable EXECUTABLE_NAME)
    # get status
    add_custom_target(
       get_status
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT} -n -v
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
+         -n -v -b ${AVR_UPLOAD_BAUDRATE} ${AVR_UPLOADTOOL_OPTIONS}
       COMMENT "Get status from ${AVR_MCU}"
    )
 
