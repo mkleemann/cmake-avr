@@ -14,6 +14,8 @@
 #
 # AVR_MCU (default: atmega8)
 #     the type of AVR the application is built for
+# AVR_MCU_SPEED (default: 16000000UL)
+#     clock frequency for the MCU used
 # AVR_L_FUSE (NO DEFAULT)
 #     the LOW fuse value for the MCU used
 # AVR_H_FUSE (NO DEFAULT)
@@ -28,6 +30,8 @@
 #     the programmer hardware used, e.g. avrispmkII
 # AVR_UPLOAD_BAUDRATE (default: 115200)
 #     the upload speed fot the upload tool
+# AVR_UPLOADTOOL_OPTIONS (default: "")
+#     the additional parameters for AVR_UPLOADTOOL
 ##########################################################################
 
 ##########################################################################
@@ -56,8 +60,10 @@ set(CMAKE_CXX_COMPILER ${AVR_CXX})
 # some necessary tools and variables for AVR builds, which may not
 # defined yet
 # - AVR_MCU
+# - AVR_MCU_SPEED
 # - AVR_UPLOADTOOL
 # - AVR_UPLOADTOOL_PORT
+# - AVR_UPLOADTOOL_OPTIONS
 # - AVR_PROGRAMMER
 # - AVR_UPLOAD_BAUDRATE
 # - AVR_SIZE_ARGS
@@ -71,6 +77,17 @@ if(NOT AVR_MCU)
       CACHE STRING "Set default MCU: atmega8 (see 'avr-gcc --target-help' for valid values)"
    )
 endif(NOT AVR_MCU)
+
+# default MCU speed (frequency)
+if(NOT AVR_MCU_SPEED)
+	set(
+		AVR_MCU_SPEED "16000000UL"
+		CACHE STRING "Set default MCU SPEED: 16000000 MHz (see 'avr-gcc --help' for valid values)"
+	)
+	add_definitions("-DF_CPU=${AVR_MCU_SPEED}")
+else(NOT AVR_MCU_SPEED)
+	add_definitions("-DF_CPU=${AVR_MCU_SPEED}")
+endif(NOT AVR_MCU_SPEED)
 
 # default upload tool
 if(NOT AVR_UPLOADTOOL)
@@ -88,6 +105,14 @@ if(NOT AVR_UPLOADTOOL_PORT)
       CACHE STRING "Set default upload tool port: usb"
    )
 endif(NOT AVR_UPLOADTOOL_PORT)
+
+#default upload options
+if(NOT AVR_UPLOADTOOL_OPTIONS)
+	set(
+		AVR_UPLOADTOOL_OPTIONS ""
+		CACHE STRING "Set additional avrdude options (see 'avrdude --help')"
+	)
+endif(NOT AVR AVR_UPLOADTOOL_OPTIONS)
 
 # default programmer (hardware)
 if(NOT AVR_PROGRAMMER)

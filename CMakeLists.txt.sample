@@ -24,9 +24,10 @@ cmake_minimum_required(VERSION 2.8)
 # tools to be used for programming the AVR
 ##################################################################################
 set(AVR_UPLOADTOOL avrdude)
-set(AVR_PROGRAMMER avrispmkII)
 set(AVR_UPLOADTOOL_PORT usb)
+set(AVR_PROGRAMMER avrispmkII)
 set(AVR_UPLOAD_BAUDRATE 115200)
+set(AVR_UPLOADTOOL_OPTIONS "")
 
 ##################################################################################
 # AVR and fuses needs to be set
@@ -46,6 +47,7 @@ project(EXAMPLE)
 # status messages
 ##################################################################################
 message(STATUS "Current MCU is set to: ${AVR_MCU}")
+message(STATUS "Current MCU speed is set to: ${AVR_MCU_SPEED}")
 message(STATUS "Current H_FUSE is set to: ${AVR_H_FUSE}")
 message(STATUS "Current L_FUSE is set to: ${AVR_L_FUSE}")
 message(STATUS "Current uploadtool is: ${AVR_UPLOADTOOL}")
@@ -64,7 +66,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 ##################################################################################
 # needs to be defined for AVR toolchain
 ##################################################################################
-set(MCU_SPEED "4000000UL")
+set(AVR_MCU_SPEED "4000000UL")
 
 ##################################################################################
 # some cmake cross-compile necessities
@@ -117,9 +119,8 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 ##################################################################################
-# compiler options for all build types
+# set command line arguments for compiler
 ##################################################################################
-add_definitions("-DF_CPU=${MCU_SPEED}")
 add_definitions("-fpack-struct")
 add_definitions("-fshort-enums")
 add_definitions("-Wall")
