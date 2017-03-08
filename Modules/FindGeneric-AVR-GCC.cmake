@@ -98,6 +98,8 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_SYSTEM_INCLUDE_PATH "${CMAKE_FIND_ROOT_PATH}/include")
 set(CMAKE_SYSTEM_LIBRARY_PATH "${CMAKE_FIND_ROOT_PATH}/lib")
 
+include_directories(${CMAKE_FIND_ROOT_PATH}/include) 
+
 ##########################################################################
 # some necessary tools and variables for AVR builds, which may not
 # defined yet

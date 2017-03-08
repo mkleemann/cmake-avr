@@ -34,7 +34,7 @@ set(AVR_L_FUSE 0xc3)
 
 ### END TOOLCHAIN SETUP AREA #####################################################
 
-include(../generic-gcc-avr.cmake)
+find_package(Generic-AVR-GCC)
 
 ##################################################################################
 # name your project
