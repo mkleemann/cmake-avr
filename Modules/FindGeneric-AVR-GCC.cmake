@@ -276,6 +276,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    # set file names
    set(elf_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.elf)
    set(hex_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.hex)
+   set(bin_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.bin)
    set(map_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.map)
    set(eeprom_image ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}-eeprom.hex)
 
@@ -289,10 +290,21 @@ function(add_avr_executable EXECUTABLE_NAME)
          LINK_FLAGS "-mmcu=${AVR_MCU} -Wl,--gc-sections -mrelax -Wl,-Map,${map_file}"
    )
 
+   # hex file
    add_custom_command(
       OUTPUT ${hex_file}
       COMMAND
          ${AVR_OBJCOPY} -j .text -j .data -O ihex ${elf_file} ${hex_file}
+      COMMAND
+         ${AVR_SIZE_TOOL} ${AVR_SIZE_ARGS} ${elf_file}
+      DEPENDS ${elf_file}
+   )
+
+   # bin file
+   add_custom_command(
+      OUTPUT ${bin_file}
+      COMMAND
+         ${AVR_OBJCOPY} -j .text -j .data -O binary ${elf_file} ${bin_file}
       COMMAND
          ${AVR_SIZE_TOOL} ${AVR_SIZE_ARGS} ${elf_file}
       DEPENDS ${elf_file}
@@ -308,12 +320,14 @@ function(add_avr_executable EXECUTABLE_NAME)
       DEPENDS ${elf_file}
    )
 
+   # 
    add_custom_target(
       ${EXECUTABLE_NAME}
       ALL
       DEPENDS ${hex_file} ${eeprom_image}
    )
 
+   # 
    set_target_properties(
       ${EXECUTABLE_NAME}
       PROPERTIES
