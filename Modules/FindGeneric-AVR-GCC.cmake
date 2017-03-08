@@ -334,6 +334,14 @@ function(add_avr_executable EXECUTABLE_NAME)
          OUTPUT_NAME "${elf_file}"
    )
 
+   # size
+   add_custom_target(
+      size
+         ${CMAKE_SIZE_TOOL} ${AVR_SIZE_ARGS} ${elf_file}
+      DEPENDS
+         ${elf_file}
+   )
+
    # clean
    get_directory_property(clean_files ADDITIONAL_MAKE_CLEAN_FILES)
    set_directory_properties(
