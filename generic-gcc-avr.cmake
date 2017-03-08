@@ -47,6 +47,12 @@ find_program(AVR_CXX avr-g++)
 find_program(AVR_OBJCOPY avr-objcopy)
 find_program(AVR_SIZE_TOOL avr-size)
 find_program(AVR_OBJDUMP avr-objdump)
+find_program(AVR_ARCHIVER avr-ar)
+find_program(AVR_LINKER avr-ld)
+find_program(AVR_NM avr-nm)
+find_program(AVR_RANLIB avr-ranlib)
+find_program(AVR_STRIP avr-strip)
+find_program(AVR_ASM avra)
 
 ##########################################################################
 # toolchain starts with defining mandatory variables
@@ -55,6 +61,17 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR avr)
 set(CMAKE_C_COMPILER ${AVR_CC})
 set(CMAKE_CXX_COMPILER ${AVR_CXX})
+set(CMAKE_OBJCOPY ${AVR_OBJCOPY}) 
+set(CMAKE_SIZE_TOOL ${AVR_SIZE_TOOL})
+set(CMAKE_OBJDUMP ${AVR_OBJDUMP})
+set(CMAKE_AR ${AVR_ARCHIVER})
+set(CMAKE_LINKER ${AVR_LINKER})
+set(CMAKE_NM ${AVR_NM})
+set(CMAKE_RANLIB ${AVR_RANLIB})
+set(CMAKE_STRIP ${AVR_STRIP})
+set(CMAKE_ASM_COMPILER ${AVR_ASM})
+#set(MCU_MAX_SIZE 28672) #TODO use this! 
+
 
 ##################################################################################
 # some cmake cross-compile necessities
