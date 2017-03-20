@@ -29,6 +29,8 @@ set(AVR_PROGRAMMER avrispmkII)
 set(AVR_UPLOAD_BAUDRATE 115200)
 set(AVR_UPLOADTOOL_OPTIONS "")
 
+set(WITH_MCU OFF)
+
 ##################################################################################
 # AVR and fuses needs to be set
 ##################################################################################

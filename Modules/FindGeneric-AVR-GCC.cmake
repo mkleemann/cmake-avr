@@ -40,6 +40,7 @@
 # options
 ##########################################################################
 option(WITH_MCU "Add the mCU type to the target file name." ON)
+option(CXX_NO_THREAD_SAFE_STATICS "Don't use fread save statics in C++" ON)
 
 ##########################################################################
 # executables in use
@@ -255,7 +256,14 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 ##########################################################################
-# target file name add-on
+# thread safe option
+##########################################################################
+if(CXX_NO_THREAD_SAFE_STATICS)
+   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -fno-threadsafe-statics)
+endif(CXX_NO_THREAD_SAFE_STATICS)
+
+##########################################################################
+# target file name add-on option
 ##########################################################################
 if(WITH_MCU)
    set(MCU_TYPE_FOR_FILENAME "-${AVR_MCU}")
@@ -324,14 +332,14 @@ function(add_avr_executable EXECUTABLE_NAME)
       DEPENDS ${elf_file}
    )
 
-   # 
+   #
    add_custom_target(
       ${EXECUTABLE_NAME}
       ALL
       DEPENDS ${hex_file} ${eeprom_image}
    )
 
-   # 
+   #
    set_target_properties(
       ${EXECUTABLE_NAME}
       PROPERTIES
