@@ -1,5 +1,16 @@
 ## cmake-avr - a cmake toolchain for AVR projects
 
+### Supports
+- build
+- upload
+- disassembly
+
+### Installation
+- run install.sh with sudo
+- copy sample in your porject folder
+- adjust it to your project
+- use
+
 ### Testing the example provided
 
 The toolchain was created and tested within the following environment:
@@ -26,9 +37,9 @@ Windows 7
 * Atmel Studio 6.2
 * git 1.9.0.msysgit
 
-OS X 
+OS X
 * OS X 10.10 with AVR toolchain installed from [macports](http://macports.org)
-* cmake 3.0.2 
+* cmake 3.0.2
 * GNU Make 3.81
 * avr-gcc 4.9.1
 * avr-libc 1.8.1
