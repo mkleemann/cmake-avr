@@ -20,6 +20,8 @@
 #     the LOW fuse value for the MCU used
 # AVR_H_FUSE (NO DEFAULT)
 #     the HIGH fuse value for the MCU used
+# AVR_E_FUSE (NO DEFAULT)
+#     the EXTENDED fuse value for the MCU used
 # AVR_UPLOADTOOL (default: avrdude)
 #     the application used to upload to the MCU
 #     NOTE: The toolchain is currently quite specific about
@@ -53,6 +55,7 @@ find_program(AVR_NM avr-nm)
 find_program(AVR_RANLIB avr-ranlib)
 find_program(AVR_STRIP avr-strip)
 find_program(AVR_ASM avra)
+find_program(AVR_AS avr-as)
 
 ##########################################################################
 # toolchain starts with defining mandatory variables
@@ -61,7 +64,7 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR avr)
 set(CMAKE_C_COMPILER ${AVR_CC})
 set(CMAKE_CXX_COMPILER ${AVR_CXX})
-set(CMAKE_OBJCOPY ${AVR_OBJCOPY}) 
+set(CMAKE_OBJCOPY ${AVR_OBJCOPY})
 set(CMAKE_SIZE_TOOL ${AVR_SIZE_TOOL})
 set(CMAKE_OBJDUMP ${AVR_OBJDUMP})
 set(CMAKE_AR ${AVR_ARCHIVER})
@@ -69,8 +72,8 @@ set(CMAKE_LINKER ${AVR_LINKER})
 set(CMAKE_NM ${AVR_NM})
 set(CMAKE_RANLIB ${AVR_RANLIB})
 set(CMAKE_STRIP ${AVR_STRIP})
-set(CMAKE_ASM_COMPILER ${AVR_ASM})
-#set(MCU_MAX_SIZE 28672) #TODO use this! 
+set(CMAKE_ASM_COMPILER ${AVR_AS})
+#set(MCU_MAX_SIZE 28672) #TODO use this!
 
 
 ##################################################################################
@@ -98,7 +101,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_SYSTEM_INCLUDE_PATH "${CMAKE_FIND_ROOT_PATH}/include")
 set(CMAKE_SYSTEM_LIBRARY_PATH "${CMAKE_FIND_ROOT_PATH}/lib")
 
-include_directories(${CMAKE_FIND_ROOT_PATH}/include) 
+include_directories(${CMAKE_FIND_ROOT_PATH}/include)
 
 ##########################################################################
 # some necessary tools and variables for AVR builds, which may not
@@ -166,13 +169,13 @@ if(NOT AVR_PROGRAMMER)
    )
 endif(NOT AVR_PROGRAMMER)
 
-# default upload baudrate 
-if(NOT AVR_UPLOAD_BAUDRATE) 
-   set( 
-      AVR_UPLOAD_BAUDRATE 115200 
-      CACHE STRING "Set default upload baudrate: 115200" 
-   ) 
-endif(NOT AVR_UPLOAD_BAUDRATE) 
+# default upload baudrate
+if(NOT AVR_UPLOAD_BAUDRATE)
+   set(
+      AVR_UPLOAD_BAUDRATE 115200
+      CACHE STRING "Set default upload baudrate: 115200"
+   )
+endif(NOT AVR_UPLOAD_BAUDRATE)
 
 #default avr-size args
 if(NOT AVR_SIZE_ARGS)
@@ -212,29 +215,30 @@ endif(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
 SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
-##################################################################################
+##########################################################################
 # status messages
-##################################################################################
+##########################################################################
 message(STATUS "Current MCU is set to: ${AVR_MCU}")
 message(STATUS "Current MCU speed is set to: ${AVR_MCU_SPEED}")
 message(STATUS "Current H_FUSE is set to: ${AVR_H_FUSE}")
 message(STATUS "Current L_FUSE is set to: ${AVR_L_FUSE}")
+message(STATUS "Current E_FUSE is set to: ${AVR_E_FUSE}")
 message(STATUS "Current uploadtool is: ${AVR_UPLOADTOOL}")
 message(STATUS "Current upload port is: ${AVR_UPLOADTOOL_PORT}")
 message(STATUS "Current programmer is: ${AVR_PROGRAMMER}")
 message(STATUS "Current upload speed is: ${AVR_UPLOAD_BAUDRATE}")
 message(STATUS "Current uploadtool options are: ${AVR_UPLOADTOOL_OPTIONS}")
 
-##################################################################################
+##########################################################################
 # status messages for generating
-##################################################################################
+##########################################################################
 message(STATUS "Set CMAKE_FIND_ROOT_PATH to ${CMAKE_FIND_ROOT_PATH}")
 message(STATUS "Set CMAKE_SYSTEM_INCLUDE_PATH to ${CMAKE_SYSTEM_INCLUDE_PATH}")
 message(STATUS "Set CMAKE_SYSTEM_LIBRARY_PATH to ${CMAKE_SYSTEM_LIBRARY_PATH}")
 
-##################################################################################
+##########################################################################
 # set compiler options for build types
-##################################################################################
+##########################################################################
 if(CMAKE_BUILD_TYPE MATCHES Release)
    set(CMAKE_C_FLAGS_RELEASE "-Os")
    set(CMAKE_CXX_FLAGS_RELEASE "-Os")
@@ -386,6 +390,7 @@ function(add_avr_executable EXECUTABLE_NAME)
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT} -n
          -U lfuse:r:-:b
          -U hfuse:r:-:b
+         -U efuse:r:-:b
       COMMENT "Get fuses from ${AVR_MCU}"
    )
 
@@ -395,7 +400,8 @@ function(add_avr_executable EXECUTABLE_NAME)
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
          -U lfuse:w:${AVR_L_FUSE}:m
          -U hfuse:w:${AVR_H_FUSE}:m
-         COMMENT "Setup: High Fuse: ${AVR_H_FUSE} Low Fuse: ${AVR_L_FUSE}"
+         -U efuse:w:${AVR_E_FUSE}:m
+         COMMENT "Setup: High Fuse: ${AVR_H_FUSE} Low Fuse: ${AVR_L_FUSE} Extended Fuse ${AVR_E_FUSE}"
    )
 
    # get oscillator calibration
