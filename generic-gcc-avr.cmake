@@ -51,6 +51,11 @@ set(CMAKE_C_COMPILER ${AVR_CC})
 set(CMAKE_CXX_COMPILER ${AVR_CXX})
 
 ##########################################################################
+# Identification
+##########################################################################
+set(AVR 1)
+
+##########################################################################
 # some necessary tools and variables for AVR builds, which may not
 # defined yet
 # - AVR_UPLOADTOOL
