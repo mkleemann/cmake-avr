@@ -347,3 +347,37 @@ function(avr_target_link_libraries EXECUTABLE_TARGET)
 
    target_link_libraries(${TARGET_LIST} ${NON_TARGET_LIST})
 endfunction(avr_target_link_libraries EXECUTABLE_TARGET)
+
+##########################################################################
+# avr_target_include_directories
+#
+# Calls target_include_directories with AVR target names
+##########################################################################
+
+function(avr_target_include_directories EXECUTABLE_TARGET)
+   if(NOT ARGN)
+      message(FATAL_ERROR "No include directories to add to ${EXECUTABLE_TARGET}.")
+   endif()
+
+   get_target_property(TARGET_LIST ${EXECUTABLE_TARGET} OUTPUT_NAME)
+   set(extra_args ${ARGN})
+
+   target_include_directories(${TARGET_LIST} ${extra_args})
+endfunction()
+
+##########################################################################
+# avr_target_compile_definitions
+#
+# Calls target_compile_definitions with AVR target names
+##########################################################################
+
+function(avr_target_compile_definitions EXECUTABLE_TARGET)
+   if(NOT ARGN)
+      message(FATAL_ERROR "No compile definitions to add to ${EXECUTABLE_TARGET}.")
+   endif()
+
+   get_target_property(TARGET_LIST ${EXECUTABLE_TARGET} OUTPUT_NAME)
+   set(extra_args ${ARGN})
+
+   target_compile_definitions(${TARGET_LIST} ${extra_args})
+endfunction()
