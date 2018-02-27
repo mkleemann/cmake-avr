@@ -222,7 +222,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    # upload eeprom only - with avrdude
    # see also bug http://savannah.nongnu.org/bugs/?40142
    add_custom_target(
-      upload_eeprom
+      upload_eeprom_${EXECUTABLE_NAME}
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
          -U eeprom:w:${eeprom_image}
          -P ${AVR_UPLOADTOOL_PORT}
@@ -232,14 +232,14 @@ function(add_avr_executable EXECUTABLE_NAME)
 
    # get status
    add_custom_target(
-      get_status
+      get_status_${EXECUTABLE_NAME}
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT} -n -v
       COMMENT "Get status from ${AVR_MCU}"
    )
 
    # get fuses
    add_custom_target(
-      get_fuses
+      get_fuses_${EXECUTABLE_NAME}
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT} -n
          -U lfuse:r:-:b
          -U hfuse:r:-:b
@@ -248,7 +248,7 @@ function(add_avr_executable EXECUTABLE_NAME)
 
    # set fuses
    add_custom_target(
-      set_fuses
+      set_fuses_${EXECUTABLE_NAME}
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
          -U lfuse:w:${AVR_L_FUSE}:m
          -U hfuse:w:${AVR_H_FUSE}:m
@@ -257,7 +257,7 @@ function(add_avr_executable EXECUTABLE_NAME)
 
    # get oscillator calibration
    add_custom_target(
-      get_calibration
+      get_calibration_${EXECUTABLE_NAME}
          ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
          -U calibration:r:${AVR_MCU}_calib.tmp:r
          COMMENT "Write calibration status of internal oscillator to ${AVR_MCU}_calib.tmp."
@@ -265,7 +265,7 @@ function(add_avr_executable EXECUTABLE_NAME)
 
    # set oscillator calibration
    add_custom_target(
-      set_calibration
+      set_calibration_${EXECUTABLE_NAME}
       ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
          -U calibration:w:${AVR_MCU}_calib.hex
          COMMENT "Program calibration status of internal oscillator from ${AVR_MCU}_calib.hex."
