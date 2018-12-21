@@ -60,6 +60,7 @@ set(AVR 1)
 # defined yet
 # - AVR_UPLOADTOOL
 # - AVR_UPLOADTOOL_PORT
+# - AVR_UPLOADTOOL_BAUDRATE
 # - AVR_PROGRAMMER
 # - AVR_MCU
 # - AVR_SIZE_ARGS
@@ -81,6 +82,14 @@ if(NOT AVR_UPLOADTOOL_PORT)
       CACHE STRING "Set default upload tool port: usb"
    )
 endif(NOT AVR_UPLOADTOOL_PORT)
+
+# default baudrate
+if(NOT AVR_UPLOADTOOL_BAUDRATE)
+   set(
+      AVR_UPLOADTOOL_BAUDRATE 19200
+      CACHE STRING "Set default baudrate for programmer: 19200"
+   )
+endif(NOT AVR_UPLOADTOOL_BAUDRATE)
 
 # default programmer (hardware)
 if(NOT AVR_PROGRAMMER)
@@ -212,7 +221,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    # upload - with avrdude
    add_custom_target(
       upload_${EXECUTABLE_NAME}
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -b ${AVR_UPLOADTOOL_BAUDRATE} ${AVR_UPLOADTOOL_OPTIONS}
          -U flash:w:${hex_file}
          -P ${AVR_UPLOADTOOL_PORT}
       DEPENDS ${hex_file}
@@ -223,7 +232,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    # see also bug http://savannah.nongnu.org/bugs/?40142
    add_custom_target(
       upload_eeprom
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -b ${AVR_UPLOADTOOL_BAUDRATE} ${AVR_UPLOADTOOL_OPTIONS}
          -U eeprom:w:${eeprom_image}
          -P ${AVR_UPLOADTOOL_PORT}
       DEPENDS ${eeprom_image}
@@ -233,14 +242,14 @@ function(add_avr_executable EXECUTABLE_NAME)
    # get status
    add_custom_target(
       get_status
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT} -n -v
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -b ${AVR_UPLOADTOOL_BAUDRATE} -P ${AVR_UPLOADTOOL_PORT} -n -v
       COMMENT "Get status from ${AVR_MCU}"
    )
 
    # get fuses
    add_custom_target(
       get_fuses
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT} -n
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -b ${AVR_UPLOADTOOL_BAUDRATE} -P ${AVR_UPLOADTOOL_PORT} -n
          -U lfuse:r:-:b
          -U hfuse:r:-:b
       COMMENT "Get fuses from ${AVR_MCU}"
@@ -249,7 +258,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    # set fuses
    add_custom_target(
       set_fuses
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -b ${AVR_UPLOADTOOL_BAUDRATE} -P ${AVR_UPLOADTOOL_PORT}
          -U lfuse:w:${AVR_L_FUSE}:m
          -U hfuse:w:${AVR_H_FUSE}:m
          COMMENT "Setup: High Fuse: ${AVR_H_FUSE} Low Fuse: ${AVR_L_FUSE}"
@@ -258,7 +267,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    # get oscillator calibration
    add_custom_target(
       get_calibration
-         ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
+         ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -b ${AVR_UPLOADTOOL_BAUDRATE} -P ${AVR_UPLOADTOOL_PORT}
          -U calibration:r:${AVR_MCU}_calib.tmp:r
          COMMENT "Write calibration status of internal oscillator to ${AVR_MCU}_calib.tmp."
    )
@@ -266,7 +275,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    # set oscillator calibration
    add_custom_target(
       set_calibration
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
+      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -b ${AVR_UPLOADTOOL_BAUDRATE} -P ${AVR_UPLOADTOOL_PORT}
          -U calibration:w:${AVR_MCU}_calib.hex
          COMMENT "Program calibration status of internal oscillator from ${AVR_MCU}_calib.hex."
    )
