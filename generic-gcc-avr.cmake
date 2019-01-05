@@ -67,45 +67,53 @@ set(AVR 1)
 
 # default upload tool
 if(NOT AVR_UPLOADTOOL)
-   set(
-      AVR_UPLOADTOOL avrdude
-      CACHE STRING "Set default upload tool: avrdude"
-   )
-   find_program(AVR_UPLOADTOOL avrdude)
+    set(
+            AVR_UPLOADTOOL avrdude
+            CACHE STRING "Set default upload tool: avrdude"
+    )
+    find_program(AVR_UPLOADTOOL avrdude)
 endif(NOT AVR_UPLOADTOOL)
 
 # default upload tool port
 if(NOT AVR_UPLOADTOOL_PORT)
-   set(
-      AVR_UPLOADTOOL_PORT usb
-      CACHE STRING "Set default upload tool port: usb"
-   )
+    set(
+            AVR_UPLOADTOOL_PORT usb
+            CACHE STRING "Set default upload tool port: usb"
+    )
 endif(NOT AVR_UPLOADTOOL_PORT)
 
 # default programmer (hardware)
 if(NOT AVR_PROGRAMMER)
-   set(
-      AVR_PROGRAMMER avrispmkII
-      CACHE STRING "Set default programmer hardware model: avrispmkII"
-   )
+    set(
+            AVR_PROGRAMMER avrispmkII
+            CACHE STRING "Set default programmer hardware model: avrispmkII"
+    )
 endif(NOT AVR_PROGRAMMER)
 
 # default MCU (chip)
 if(NOT AVR_MCU)
-   set(
-      AVR_MCU atmega8
-      CACHE STRING "Set default MCU: atmega8 (see 'avr-gcc --target-help' for valid values)"
-   )
+    set(
+            AVR_MCU atmega8
+            CACHE STRING "Set default MCU: atmega8 (see 'avr-gcc --target-help' for valid values)"
+    )
 endif(NOT AVR_MCU)
 
 #default avr-size args
 if(NOT AVR_SIZE_ARGS)
-   if(APPLE)
-      set(AVR_SIZE_ARGS -B)
-   else(APPLE)
-      set(AVR_SIZE_ARGS -C;--mcu=${AVR_MCU})
-   endif(APPLE)
+    if(APPLE)
+        set(AVR_SIZE_ARGS -B)
+    else(APPLE)
+        set(AVR_SIZE_ARGS -C;--mcu=${AVR_MCU})
+    endif(APPLE)
 endif(NOT AVR_SIZE_ARGS)
+
+# prepare base flags for upload tool
+set(AVR_UPLOADTOOL_BASE_OPTIONS -p ${AVR_MCU} -c ${AVR_PROGRAMMER})
+
+# use AVR_UPLOADTOOL_BAUDRATE as baudrate for upload tool (if defined)
+if(AVR_UPLOADTOOL_BAUDRATE)
+    set(AVR_UPLOADTOOL_BASE_OPTIONS ${AVR_UPLOADTOOL_BASE_OPTIONS} -b ${AVR_UPLOADTOOL_BAUDRATE})
+endif()
 
 ##########################################################################
 # check build types:
@@ -117,18 +125,20 @@ endif(NOT AVR_SIZE_ARGS)
 # AVR toolchain, e.g. _delay_ms().
 ##########################################################################
 if(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
-        (CMAKE_BUILD_TYPE MATCHES RelWithDebInfo) OR
-        (CMAKE_BUILD_TYPE MATCHES Debug) OR
-        (CMAKE_BUILD_TYPE MATCHES MinSizeRel)))
-   set(
-      CMAKE_BUILD_TYPE Release
-      CACHE STRING "Choose cmake build type: Debug Release RelWithDebInfo MinSizeRel"
-      FORCE
-   )
+(CMAKE_BUILD_TYPE MATCHES RelWithDebInfo) OR
+(CMAKE_BUILD_TYPE MATCHES Debug) OR
+(CMAKE_BUILD_TYPE MATCHES MinSizeRel)))
+    set(
+            CMAKE_BUILD_TYPE Release
+            CACHE STRING "Choose cmake build type: Debug Release RelWithDebInfo MinSizeRel"
+            FORCE
+    )
 endif(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
-           (CMAKE_BUILD_TYPE MATCHES RelWithDebInfo) OR
-           (CMAKE_BUILD_TYPE MATCHES Debug) OR
-           (CMAKE_BUILD_TYPE MATCHES MinSizeRel)))
+(CMAKE_BUILD_TYPE MATCHES RelWithDebInfo) OR
+(CMAKE_BUILD_TYPE MATCHES Debug) OR
+(CMAKE_BUILD_TYPE MATCHES MinSizeRel)))
+
+
 
 ##########################################################################
 
@@ -136,9 +146,9 @@ endif(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
 # target file name add-on
 ##########################################################################
 if(WITH_MCU)
-   set(MCU_TYPE_FOR_FILENAME "-${AVR_MCU}")
+    set(MCU_TYPE_FOR_FILENAME "-${AVR_MCU}")
 else(WITH_MCU)
-   set(MCU_TYPE_FOR_FILENAME "")
+    set(MCU_TYPE_FOR_FILENAME "")
 endif(WITH_MCU)
 
 ##########################################################################
@@ -151,6 +161,7 @@ endif(WITH_MCU)
 # target_link_libraries(<EXECUTABLE_NAME>-${AVR_MCU}.elf ...).
 ##########################################################################
 function(add_avr_executable EXECUTABLE_NAME)
+
    if(NOT ARGN)
       message(FATAL_ERROR "No source files given for ${EXECUTABLE_NAME}.")
    endif(NOT ARGN)
@@ -158,6 +169,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    # set file names
    set(elf_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.elf)
    set(hex_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.hex)
+   set(lst_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.lst)
    set(map_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.map)
    set(eeprom_image ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}-eeprom.hex)
 
@@ -180,6 +192,13 @@ function(add_avr_executable EXECUTABLE_NAME)
       DEPENDS ${elf_file}
    )
 
+   add_custom_command(
+      OUTPUT ${lst_file}
+      COMMAND
+         ${AVR_OBJDUMP} -d ${elf_file} > ${lst_file}
+      DEPENDS ${elf_file}
+   )
+
    # eeprom
    add_custom_command(
       OUTPUT ${eeprom_image}
@@ -193,7 +212,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    add_custom_target(
       ${EXECUTABLE_NAME}
       ALL
-      DEPENDS ${hex_file} ${eeprom_image}
+      DEPENDS ${hex_file} ${lst_file} ${eeprom_image}
    )
 
    set_target_properties(
@@ -212,7 +231,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    # upload - with avrdude
    add_custom_target(
       upload_${EXECUTABLE_NAME}
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
+      ${AVR_UPLOADTOOL} ${AVR_UPLOADTOOL_BASE_OPTIONS} ${AVR_UPLOADTOOL_OPTIONS}
          -U flash:w:${hex_file}
          -P ${AVR_UPLOADTOOL_PORT}
       DEPENDS ${hex_file}
@@ -223,7 +242,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    # see also bug http://savannah.nongnu.org/bugs/?40142
    add_custom_target(
       upload_${EXECUTABLE_NAME}_eeprom
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} ${AVR_UPLOADTOOL_OPTIONS}
+      ${AVR_UPLOADTOOL} ${AVR_UPLOADTOOL_BASE_OPTIONS} ${AVR_UPLOADTOOL_OPTIONS}
          -U eeprom:w:${eeprom_image}
          -P ${AVR_UPLOADTOOL_PORT}
       DEPENDS ${eeprom_image}
@@ -249,34 +268,34 @@ endfunction(add_avr_executable)
 # target_link_libraries(...).
 ##########################################################################
 function(add_avr_library LIBRARY_NAME)
-   if(NOT ARGN)
-      message(FATAL_ERROR "No source files given for ${LIBRARY_NAME}.")
-   endif(NOT ARGN)
+    if(NOT ARGN)
+        message(FATAL_ERROR "No source files given for ${LIBRARY_NAME}.")
+    endif(NOT ARGN)
 
-   set(lib_file ${LIBRARY_NAME}${MCU_TYPE_FOR_FILENAME})
+    set(lib_file ${LIBRARY_NAME}${MCU_TYPE_FOR_FILENAME})
 
-   add_library(${lib_file} STATIC ${ARGN})
+    add_library(${lib_file} STATIC ${ARGN})
 
-   set_target_properties(
-      ${lib_file}
-      PROPERTIES
-         COMPILE_FLAGS "-mmcu=${AVR_MCU}"
-         OUTPUT_NAME "${lib_file}"
-   )
-
-   if(NOT TARGET ${LIBRARY_NAME})
-      add_custom_target(
-         ${LIBRARY_NAME}
-         ALL
-         DEPENDS ${lib_file}
-      )
-
-      set_target_properties(
-         ${LIBRARY_NAME}
-         PROPERTIES
+    set_target_properties(
+            ${lib_file}
+            PROPERTIES
+            COMPILE_FLAGS "-mmcu=${AVR_MCU}"
             OUTPUT_NAME "${lib_file}"
-      )
-   endif(NOT TARGET ${LIBRARY_NAME})
+    )
+
+    if(NOT TARGET ${LIBRARY_NAME})
+        add_custom_target(
+                ${LIBRARY_NAME}
+                ALL
+                DEPENDS ${lib_file}
+        )
+
+        set_target_properties(
+                ${LIBRARY_NAME}
+                PROPERTIES
+                OUTPUT_NAME "${lib_file}"
+        )
+    endif(NOT TARGET ${LIBRARY_NAME})
 
 endfunction(add_avr_library)
 
@@ -298,7 +317,7 @@ function(avr_target_link_libraries EXECUTABLE_TARGET)
    foreach(TGT ${ARGN})
       if(TARGET ${TGT})
          get_target_property(ARG_NAME ${TGT} OUTPUT_NAME)
-         list(APPEND TARGET_LIST ${ARG_NAME})
+         list(APPEND NON_TARGET_LIST ${ARG_NAME})
       else(TARGET ${TGT})
          list(APPEND NON_TARGET_LIST ${TGT})
       endif(TARGET ${TGT})
@@ -314,14 +333,14 @@ endfunction(avr_target_link_libraries EXECUTABLE_TARGET)
 ##########################################################################
 
 function(avr_target_include_directories EXECUTABLE_TARGET)
-   if(NOT ARGN)
-      message(FATAL_ERROR "No include directories to add to ${EXECUTABLE_TARGET}.")
-   endif()
+    if(NOT ARGN)
+        message(FATAL_ERROR "No include directories to add to ${EXECUTABLE_TARGET}.")
+    endif()
 
-   get_target_property(TARGET_LIST ${EXECUTABLE_TARGET} OUTPUT_NAME)
-   set(extra_args ${ARGN})
+    get_target_property(TARGET_LIST ${EXECUTABLE_TARGET} OUTPUT_NAME)
+    set(extra_args ${ARGN})
 
-   target_include_directories(${TARGET_LIST} ${extra_args})
+    target_include_directories(${TARGET_LIST} ${extra_args})
 endfunction()
 
 ##########################################################################
@@ -331,12 +350,12 @@ endfunction()
 ##########################################################################
 
 function(avr_target_compile_definitions EXECUTABLE_TARGET)
-   if(NOT ARGN)
-      message(FATAL_ERROR "No compile definitions to add to ${EXECUTABLE_TARGET}.")
-   endif()
+    if(NOT ARGN)
+        message(FATAL_ERROR "No compile definitions to add to ${EXECUTABLE_TARGET}.")
+    endif()
 
-   get_target_property(TARGET_LIST ${EXECUTABLE_TARGET} OUTPUT_NAME)
-   set(extra_args ${ARGN})
+    get_target_property(TARGET_LIST ${EXECUTABLE_TARGET} OUTPUT_NAME)
+    set(extra_args ${ARGN})
 
    target_compile_definitions(${TARGET_LIST} ${extra_args})
 endfunction()
@@ -345,14 +364,14 @@ function(avr_generate_fixed_targets)
    # get status
    add_custom_target(
       get_status
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT} -n -v
+      ${AVR_UPLOADTOOL} ${AVR_UPLOADTOOL_BASE_OPTIONS} -P ${AVR_UPLOADTOOL_PORT} -n -v
       COMMENT "Get status from ${AVR_MCU}"
    )
    
    # get fuses
    add_custom_target(
       get_fuses
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT} -n
+      ${AVR_UPLOADTOOL} ${AVR_UPLOADTOOL_BASE_OPTIONS} -P ${AVR_UPLOADTOOL_PORT} -n
          -U lfuse:r:-:b
          -U hfuse:r:-:b
       COMMENT "Get fuses from ${AVR_MCU}"
@@ -361,7 +380,7 @@ function(avr_generate_fixed_targets)
    # set fuses
    add_custom_target(
       set_fuses
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
+      ${AVR_UPLOADTOOL} ${AVR_UPLOADTOOL_BASE_OPTIONS} -P ${AVR_UPLOADTOOL_PORT}
          -U lfuse:w:${AVR_L_FUSE}:m
          -U hfuse:w:${AVR_H_FUSE}:m
          COMMENT "Setup: High Fuse: ${AVR_H_FUSE} Low Fuse: ${AVR_L_FUSE}"
@@ -370,7 +389,7 @@ function(avr_generate_fixed_targets)
    # get oscillator calibration
    add_custom_target(
       get_calibration
-         ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
+         ${AVR_UPLOADTOOL} ${AVR_UPLOADTOOL_BASE_OPTIONS} -P ${AVR_UPLOADTOOL_PORT}
          -U calibration:r:${AVR_MCU}_calib.tmp:r
          COMMENT "Write calibration status of internal oscillator to ${AVR_MCU}_calib.tmp."
    )
@@ -378,7 +397,7 @@ function(avr_generate_fixed_targets)
    # set oscillator calibration
    add_custom_target(
       set_calibration
-      ${AVR_UPLOADTOOL} -p ${AVR_MCU} -c ${AVR_PROGRAMMER} -P ${AVR_UPLOADTOOL_PORT}
+      ${AVR_UPLOADTOOL} ${AVR_UPLOADTOOL_BASE_OPTIONS} -P ${AVR_UPLOADTOOL_PORT}
          -U calibration:w:${AVR_MCU}_calib.hex
          COMMENT "Program calibration status of internal oscillator from ${AVR_MCU}_calib.hex."
    )
