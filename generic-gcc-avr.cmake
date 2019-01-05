@@ -158,6 +158,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    # set file names
    set(elf_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.elf)
    set(hex_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.hex)
+   set(lst_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.lst)
    set(map_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.map)
    set(eeprom_image ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}-eeprom.hex)
 
@@ -180,6 +181,13 @@ function(add_avr_executable EXECUTABLE_NAME)
       DEPENDS ${elf_file}
    )
 
+   add_custom_command(
+      OUTPUT ${lst_file}
+      COMMAND
+         ${AVR_OBJDUMP} -d ${elf_file} > ${lst_file}
+      DEPENDS ${elf_file}
+   )
+
    # eeprom
    add_custom_command(
       OUTPUT ${eeprom_image}
@@ -193,7 +201,7 @@ function(add_avr_executable EXECUTABLE_NAME)
    add_custom_target(
       ${EXECUTABLE_NAME}
       ALL
-      DEPENDS ${hex_file} ${eeprom_image}
+      DEPENDS ${hex_file} ${lst_file} ${eeprom_image}
    )
 
    set_target_properties(
