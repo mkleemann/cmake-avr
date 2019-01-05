@@ -67,44 +67,44 @@ set(AVR 1)
 
 # default upload tool
 if(NOT AVR_UPLOADTOOL)
-   set(
-      AVR_UPLOADTOOL avrdude
-      CACHE STRING "Set default upload tool: avrdude"
-   )
-   find_program(AVR_UPLOADTOOL avrdude)
+    set(
+            AVR_UPLOADTOOL avrdude
+            CACHE STRING "Set default upload tool: avrdude"
+    )
+    find_program(AVR_UPLOADTOOL avrdude)
 endif(NOT AVR_UPLOADTOOL)
 
 # default upload tool port
 if(NOT AVR_UPLOADTOOL_PORT)
-   set(
-      AVR_UPLOADTOOL_PORT usb
-      CACHE STRING "Set default upload tool port: usb"
-   )
+    set(
+            AVR_UPLOADTOOL_PORT usb
+            CACHE STRING "Set default upload tool port: usb"
+    )
 endif(NOT AVR_UPLOADTOOL_PORT)
 
 # default programmer (hardware)
 if(NOT AVR_PROGRAMMER)
-   set(
-      AVR_PROGRAMMER avrispmkII
-      CACHE STRING "Set default programmer hardware model: avrispmkII"
-   )
+    set(
+            AVR_PROGRAMMER avrispmkII
+            CACHE STRING "Set default programmer hardware model: avrispmkII"
+    )
 endif(NOT AVR_PROGRAMMER)
 
 # default MCU (chip)
 if(NOT AVR_MCU)
-   set(
-      AVR_MCU atmega8
-      CACHE STRING "Set default MCU: atmega8 (see 'avr-gcc --target-help' for valid values)"
-   )
+    set(
+            AVR_MCU atmega8
+            CACHE STRING "Set default MCU: atmega8 (see 'avr-gcc --target-help' for valid values)"
+    )
 endif(NOT AVR_MCU)
 
 #default avr-size args
 if(NOT AVR_SIZE_ARGS)
-   if(APPLE)
-      set(AVR_SIZE_ARGS -B)
-   else(APPLE)
-      set(AVR_SIZE_ARGS -C;--mcu=${AVR_MCU})
-   endif(APPLE)
+    if(APPLE)
+        set(AVR_SIZE_ARGS -B)
+    else(APPLE)
+        set(AVR_SIZE_ARGS -C;--mcu=${AVR_MCU})
+    endif(APPLE)
 endif(NOT AVR_SIZE_ARGS)
 
 ##########################################################################
@@ -117,18 +117,18 @@ endif(NOT AVR_SIZE_ARGS)
 # AVR toolchain, e.g. _delay_ms().
 ##########################################################################
 if(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
-        (CMAKE_BUILD_TYPE MATCHES RelWithDebInfo) OR
-        (CMAKE_BUILD_TYPE MATCHES Debug) OR
-        (CMAKE_BUILD_TYPE MATCHES MinSizeRel)))
-   set(
-      CMAKE_BUILD_TYPE Release
-      CACHE STRING "Choose cmake build type: Debug Release RelWithDebInfo MinSizeRel"
-      FORCE
-   )
+(CMAKE_BUILD_TYPE MATCHES RelWithDebInfo) OR
+(CMAKE_BUILD_TYPE MATCHES Debug) OR
+(CMAKE_BUILD_TYPE MATCHES MinSizeRel)))
+    set(
+            CMAKE_BUILD_TYPE Release
+            CACHE STRING "Choose cmake build type: Debug Release RelWithDebInfo MinSizeRel"
+            FORCE
+    )
 endif(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
-           (CMAKE_BUILD_TYPE MATCHES RelWithDebInfo) OR
-           (CMAKE_BUILD_TYPE MATCHES Debug) OR
-           (CMAKE_BUILD_TYPE MATCHES MinSizeRel)))
+(CMAKE_BUILD_TYPE MATCHES RelWithDebInfo) OR
+(CMAKE_BUILD_TYPE MATCHES Debug) OR
+(CMAKE_BUILD_TYPE MATCHES MinSizeRel)))
 
 ##########################################################################
 
@@ -136,9 +136,9 @@ endif(NOT ((CMAKE_BUILD_TYPE MATCHES Release) OR
 # target file name add-on
 ##########################################################################
 if(WITH_MCU)
-   set(MCU_TYPE_FOR_FILENAME "-${AVR_MCU}")
+    set(MCU_TYPE_FOR_FILENAME "-${AVR_MCU}")
 else(WITH_MCU)
-   set(MCU_TYPE_FOR_FILENAME "")
+    set(MCU_TYPE_FOR_FILENAME "")
 endif(WITH_MCU)
 
 ##########################################################################
@@ -151,6 +151,7 @@ endif(WITH_MCU)
 # target_link_libraries(<EXECUTABLE_NAME>-${AVR_MCU}.elf ...).
 ##########################################################################
 function(add_avr_executable EXECUTABLE_NAME)
+
    if(NOT ARGN)
       message(FATAL_ERROR "No source files given for ${EXECUTABLE_NAME}.")
    endif(NOT ARGN)
@@ -303,34 +304,34 @@ endfunction(add_avr_executable)
 # target_link_libraries(...).
 ##########################################################################
 function(add_avr_library LIBRARY_NAME)
-   if(NOT ARGN)
-      message(FATAL_ERROR "No source files given for ${LIBRARY_NAME}.")
-   endif(NOT ARGN)
+    if(NOT ARGN)
+        message(FATAL_ERROR "No source files given for ${LIBRARY_NAME}.")
+    endif(NOT ARGN)
 
-   set(lib_file ${LIBRARY_NAME}${MCU_TYPE_FOR_FILENAME})
+    set(lib_file ${LIBRARY_NAME}${MCU_TYPE_FOR_FILENAME})
 
-   add_library(${lib_file} STATIC ${ARGN})
+    add_library(${lib_file} STATIC ${ARGN})
 
-   set_target_properties(
-      ${lib_file}
-      PROPERTIES
-         COMPILE_FLAGS "-mmcu=${AVR_MCU}"
-         OUTPUT_NAME "${lib_file}"
-   )
-
-   if(NOT TARGET ${LIBRARY_NAME})
-      add_custom_target(
-         ${LIBRARY_NAME}
-         ALL
-         DEPENDS ${lib_file}
-      )
-
-      set_target_properties(
-         ${LIBRARY_NAME}
-         PROPERTIES
+    set_target_properties(
+            ${lib_file}
+            PROPERTIES
+            COMPILE_FLAGS "-mmcu=${AVR_MCU}"
             OUTPUT_NAME "${lib_file}"
-      )
-   endif(NOT TARGET ${LIBRARY_NAME})
+    )
+
+    if(NOT TARGET ${LIBRARY_NAME})
+        add_custom_target(
+                ${LIBRARY_NAME}
+                ALL
+                DEPENDS ${lib_file}
+        )
+
+        set_target_properties(
+                ${LIBRARY_NAME}
+                PROPERTIES
+                OUTPUT_NAME "${lib_file}"
+        )
+    endif(NOT TARGET ${LIBRARY_NAME})
 
 endfunction(add_avr_library)
 
@@ -368,14 +369,14 @@ endfunction(avr_target_link_libraries EXECUTABLE_TARGET)
 ##########################################################################
 
 function(avr_target_include_directories EXECUTABLE_TARGET)
-   if(NOT ARGN)
-      message(FATAL_ERROR "No include directories to add to ${EXECUTABLE_TARGET}.")
-   endif()
+    if(NOT ARGN)
+        message(FATAL_ERROR "No include directories to add to ${EXECUTABLE_TARGET}.")
+    endif()
 
-   get_target_property(TARGET_LIST ${EXECUTABLE_TARGET} OUTPUT_NAME)
-   set(extra_args ${ARGN})
+    get_target_property(TARGET_LIST ${EXECUTABLE_TARGET} OUTPUT_NAME)
+    set(extra_args ${ARGN})
 
-   target_include_directories(${TARGET_LIST} ${extra_args})
+    target_include_directories(${TARGET_LIST} ${extra_args})
 endfunction()
 
 ##########################################################################
@@ -385,12 +386,12 @@ endfunction()
 ##########################################################################
 
 function(avr_target_compile_definitions EXECUTABLE_TARGET)
-   if(NOT ARGN)
-      message(FATAL_ERROR "No compile definitions to add to ${EXECUTABLE_TARGET}.")
-   endif()
+    if(NOT ARGN)
+        message(FATAL_ERROR "No compile definitions to add to ${EXECUTABLE_TARGET}.")
+    endif()
 
-   get_target_property(TARGET_LIST ${EXECUTABLE_TARGET} OUTPUT_NAME)
-   set(extra_args ${ARGN})
+    get_target_property(TARGET_LIST ${EXECUTABLE_TARGET} OUTPUT_NAME)
+    set(extra_args ${ARGN})
 
-   target_compile_definitions(${TARGET_LIST} ${extra_args})
+    target_compile_definitions(${TARGET_LIST} ${extra_args})
 endfunction()
