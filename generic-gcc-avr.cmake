@@ -173,6 +173,11 @@ function(add_avr_executable EXECUTABLE_NAME)
    set(map_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.map)
    set(eeprom_image ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}-eeprom.hex)
 
+   set (${EXECUTABLE_NAME}_ELF_TARGET ${elf_file} PARENT_SCOPE)
+   set (${EXECUTABLE_NAME}_HEX_TARGET ${hex_file} PARENT_SCOPE)
+   set (${EXECUTABLE_NAME}_LST_TARGET ${lst_file} PARENT_SCOPE)
+   set (${EXECUTABLE_NAME}_MAP_TARGET ${map_file} PARENT_SCOPE)
+   set (${EXECUTABLE_NAME}_EEPROM_TARGET ${eeprom_file} PARENT_SCOPE)
    # elf file
    add_executable(${elf_file} EXCLUDE_FROM_ALL ${ARGN})
 
@@ -273,6 +278,7 @@ function(add_avr_library LIBRARY_NAME)
     endif(NOT ARGN)
 
     set(lib_file ${LIBRARY_NAME}${MCU_TYPE_FOR_FILENAME})
+    set (${LIBRARY_NAME}_LIB_TARGET ${elf_file} PARENT_SCOPE)
 
     add_library(${lib_file} STATIC ${ARGN})
 
