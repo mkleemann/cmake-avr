@@ -408,3 +408,15 @@ function(avr_generate_fixed_targets)
          COMMENT "Program calibration status of internal oscillator from ${AVR_MCU}_calib.hex."
    )
 endfunction()
+
+##########################################################################
+# Bypass the link step in CMake's "compiler sanity test" check
+#
+# CMake throws in a try_compile() target test in some generators, but does
+# not know that this is a cross compiler so the executable can't link.
+# Change the target type:
+#
+# https://stackoverflow.com/q/53633705
+##########################################################################
+
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
