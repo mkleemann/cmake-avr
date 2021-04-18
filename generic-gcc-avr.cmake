@@ -36,11 +36,11 @@ option(WITH_MCU "Add the mCU type to the target file name." ON)
 ##########################################################################
 # executables in use
 ##########################################################################
-find_program(AVR_CC avr-gcc)
-find_program(AVR_CXX avr-g++)
-find_program(AVR_OBJCOPY avr-objcopy)
-find_program(AVR_SIZE_TOOL avr-size)
-find_program(AVR_OBJDUMP avr-objdump)
+find_program(AVR_CC avr-gcc REQUIRED)
+find_program(AVR_CXX avr-g++ REQUIRED)
+find_program(AVR_OBJCOPY avr-objcopy REQUIRED)
+find_program(AVR_SIZE_TOOL avr-size REQUIRED)
+find_program(AVR_OBJDUMP avr-objdump REQUIRED)
 
 ##########################################################################
 # toolchain starts with defining mandatory variables
