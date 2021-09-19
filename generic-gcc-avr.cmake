@@ -166,12 +166,15 @@ function(add_avr_executable EXECUTABLE_NAME)
       message(FATAL_ERROR "No source files given for ${EXECUTABLE_NAME}.")
    endif(NOT ARGN)
 
+   set(target_name ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME})
+   set(bin_dir "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
+   
    # set file names
-   set(elf_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.elf)
-   set(hex_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.hex)
-   set(lst_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.lst)
-   set(map_file ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}.map)
-   set(eeprom_image ${EXECUTABLE_NAME}${MCU_TYPE_FOR_FILENAME}-eeprom.hex)
+   set(elf_file "${bin_dir}/${target_name}.elf")
+   set(hex_file "${bin_dir}/${target_name}.hex")
+   set(lst_file "${bin_dir}/${target_name}.lst")
+   set(map_file "${bin_dir}/${target_name}.map")
+   set(eeprom_image "${bin_dir}/${target_name}-eeprom.hex")
 
    set (${EXECUTABLE_NAME}_ELF_TARGET ${elf_file} PARENT_SCOPE)
    set (${EXECUTABLE_NAME}_HEX_TARGET ${hex_file} PARENT_SCOPE)
@@ -179,13 +182,14 @@ function(add_avr_executable EXECUTABLE_NAME)
    set (${EXECUTABLE_NAME}_MAP_TARGET ${map_file} PARENT_SCOPE)
    set (${EXECUTABLE_NAME}_EEPROM_TARGET ${eeprom_file} PARENT_SCOPE)
    # elf file
-   add_executable(${elf_file} EXCLUDE_FROM_ALL ${ARGN})
+   add_executable(${target_name} EXCLUDE_FROM_ALL ${ARGN})
 
    set_target_properties(
-      ${elf_file}
+      ${target_name}
       PROPERTIES
-         COMPILE_FLAGS "-mmcu=${AVR_MCU}"
+         COMPILE_FLAGS "-mmcu=${AVR_MCU} -DF_CPU=${MCU_SPEED}"
          LINK_FLAGS "-mmcu=${AVR_MCU} -Wl,--gc-sections -mrelax -Wl,-Map,${map_file}"
+         OUTPUT_NAME "${target_name}.elf"
    )
 
    add_custom_command(
@@ -194,14 +198,14 @@ function(add_avr_executable EXECUTABLE_NAME)
          ${AVR_OBJCOPY} -j .text -j .data -O ihex ${elf_file} ${hex_file}
       COMMAND
          ${AVR_SIZE_TOOL} ${AVR_SIZE_ARGS} ${elf_file}
-      DEPENDS ${elf_file}
+      DEPENDS ${target_name}
    )
 
    add_custom_command(
       OUTPUT ${lst_file}
       COMMAND
          ${AVR_OBJDUMP} -d ${elf_file} > ${lst_file}
-      DEPENDS ${elf_file}
+      DEPENDS ${target_name}
    )
 
    # eeprom
@@ -211,7 +215,7 @@ function(add_avr_executable EXECUTABLE_NAME)
          ${AVR_OBJCOPY} -j .eeprom --set-section-flags=.eeprom=alloc,load
             --change-section-lma .eeprom=0 --no-change-warnings
             -O ihex ${elf_file} ${eeprom_image}
-      DEPENDS ${elf_file}
+      DEPENDS ${target_name}
    )
 
    add_custom_target(
