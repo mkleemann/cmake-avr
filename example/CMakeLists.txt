@@ -9,13 +9,15 @@
 # Matthias Kleemann
 ##########################################################################
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.22)
 
 ### TOOLCHAIN SETUP AREA #################################################
 # Set any variables used in the toolchain prior project() call. In that
 # case they are already set and used.
 ##########################################################################
 
+# set export compile commands on for YouCompleteMe Support
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ##########################################################################
 # tools to beused for programming the AVR
 ##########################################################################
@@ -64,7 +66,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 ##########################################################################
 # needs to be defined for AVR toolchain
 ##########################################################################
-set(MCU_SPEED "4000000UL")
+set(MCU_SPEED "16000000UL")
 
 ##########################################################################
 # some cmake cross-compile necessities
@@ -80,6 +82,8 @@ else(DEFINED ENV{AVR_FIND_ROOT_PATH})
       set(CMAKE_FIND_ROOT_PATH "/usr/lib/avr")
     elseif(EXISTS "/usr/local/CrossPack-AVR")
       set(CMAKE_FIND_ROOT_PATH "/usr/local/CrossPack-AVR")
+    elseif(EXISTS "/usr/local/Cellar/avr-gcc@9")
+      set(CMAKE_FIND_ROOT_PATH "/usr/local/Cellar/avr-gcc@9/9.3.0_3/avr")
     else(EXISTS "/opt/local/avr")
       message(FATAL_ERROR "Please set AVR_FIND_ROOT_PATH in your environment.")
     endif(EXISTS "/opt/local/avr")
@@ -155,4 +159,11 @@ add_subdirectory(app)
 set(DOXYGEN_CONF_IN "doxygen.conf")
 include("${PROJECT_SOURCE_DIR}/../Modules/defaultDocuTarget.cmake")
 
+
+IF( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json" )
+  EXECUTE_PROCESS( COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
+  )
+ENDIF()
 
